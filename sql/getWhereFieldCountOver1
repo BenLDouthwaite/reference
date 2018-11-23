@@ -1,0 +1,6 @@
+
+SELECT *, COUNT(*) as my_count
+FROM table_name
+WHERE some_field = 0
+GROUP BY field_to_count
+HAVING my_count > 1
