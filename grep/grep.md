@@ -11,3 +11,11 @@ man grep | grep "context" -C 2
 ## Search recursively through a directory
 
 grep -r "recursive" .
+
+## Case insensitive search
+
+grep -i "search term" .
+
+## Don't show the filename in results
+
+grep -h -r "search term" .
