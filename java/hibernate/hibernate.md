@@ -13,3 +13,9 @@ spring.jpa.properties.hibernate.format_sql=true
 `
 
 To the spring Boot app's `application.properties` file
+
+### Hibernate JPA 
+
+When using hibernate JPA to query objects, using nativeQuery = true can ensure data is returned as objects
+
+In contrast, if querying to get dto data from another entities table, it will be returned as an array
