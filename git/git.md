@@ -2,6 +2,45 @@
 
 Git is a version control system. It allows us to work collaboratively, manage changes to projects, and revert any mistakes easily
 
+## Terminology
+* Repository - A project, contains all your files.
+
+## Commands
+### Add
+`git add [file]` 
+Select which files to save. 
+To save all files in the current directory (e.g. from the top level directory) 
+`git add .`
+
+### Clone
+`git clone [url]`
+Download a project and all of its history,
+
+### Commit 
+`git commit -m "Commit Message, make this informative`
+Record the changes you have made, so you can reset to this point in time.
+After committing, your files are saved but only on your local machine, you still need to [`push`](#push) them to the remote server.
+
+### Diff
+`git diff`
+Show the differences that haven't been staged yet  
+
+### Pull
+`git pull` 
+Download any changes to the project on the server.
+
+### Push
+`git push` / `git push [alias] [branch]`
+Upload any commits to the remote server
+
+### Status
+`git status`
+Show a range of information about the currently checked out branch, including:
+* branch name 
+* changes to be committed
+* changes not staged for commit
+* untracked files
+
 ## Changing author of the last commit.
 
 git commit --amend --author="FIRSTNAME LASTNAME <email@address.com>"
@@ -21,3 +60,7 @@ new mode 100644`
 Run 
 
 `git config core.filemode false`
+
+## Documentation
+
+https://git-scm.com/docs
