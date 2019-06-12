@@ -1,4 +1,6 @@
-# GIT
+# Git
+
+Git is a version control system. It allows us to work collaboratively, manage changes to projects, and revert any mistakes easily
 
 ## Changing author of the last commit.
 
