@@ -122,4 +122,4 @@ wordlists.fileids()
 
 print(wordlists.fileids())
 
-print(wordlists.words('lang-and-mind.txt'))
+# print(wordlists.words('lang-and-mind.txt'))
