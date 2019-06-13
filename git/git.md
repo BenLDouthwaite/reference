@@ -41,15 +41,27 @@ Show a range of information about the currently checked out branch, including:
 * changes not staged for commit
 * untracked files
 
-## Changing author of the last commit.
+## Submodules.
+https://git-scm.com/docs/git-submodule
+
+Git allows us to nest projects within each other
+
+`git submodule add [url`
+
+E.g. The 'lessons' project, and the personal website project both use this 'reference' project as a submodule.
+
+This allows us to keep a single source of data, and avoid repetition.
+
+## Common Problems
+### Changing author of the last commit.
 
 git commit --amend --author="FIRSTNAME LASTNAME <email@address.com>"
 
-## Changing the message of the last commit (before push)
+### Changing the message of the last commit (before push)
 
 `git commit --amend` and edit in vi based interface
  
-## Changing the file mode to avoid conflicts between operating systems
+### Changing the file mode to avoid conflicts between operating systems
 
 To ignore file mode changes e.g
 
