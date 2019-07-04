@@ -73,6 +73,12 @@ Run
 
 `git config core.filemode false`
 
+## Config 
+
+When setting up on a linux machine, if prompted for username on each push, add to the `.git/config`
+
+`url = https://username@repository-url.com`
+
 ## Documentation
 
 https://git-scm.com/docs
