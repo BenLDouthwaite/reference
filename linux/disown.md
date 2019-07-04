@@ -10,3 +10,4 @@ $ disown
 ```
 
 This will open the firefox program from the terminal, however, when closing the terminal the firefox browser will not be closed too
+
