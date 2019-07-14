@@ -12,6 +12,10 @@ To execute `./filename`
 
 to persist the output, run with the `-w` flag. e.g. `gofmt -w helloworld.go`
 
+## Syntax
+
+When two + function parameters share a type, you can omit from all but the last
+`x int, y int` -> `x, y int`
 # GOCD
 
 https://www.gocd.org/ 
