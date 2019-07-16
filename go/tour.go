@@ -210,7 +210,7 @@ func branching() {
 	if pow := x * x; pow < 100 {
 		fmt.Println("Pow < 100. val = ", pow)
 	}
-	// Could now use 'pow' here
+	// Could not use 'pow' here
 
 	if half := x / 2; half > 1 {
 		fmt.Println("Half greater than 1. val = ", half)
