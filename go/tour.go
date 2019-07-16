@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"runtime"
 	"time"
 )
 
@@ -11,7 +12,161 @@ var global bool
 
 const Pi = 3.14159
 
+type Vertex struct {
+	X int
+	Y int
+}
+
 func main() {
+
+	introprinting()
+
+	vars()
+	types()
+	typeconversions()
+	//bitshifting()
+
+	looping()
+	branching()
+	switches()
+	deferingexecution()
+	pointers()
+	vertexes()
+	arrays()
+	slices()
+	slicemaking()
+}
+
+func slicemaking() {
+	// TODO https://tour.golang.org/moretypes/13
+}
+
+func slices() {
+	// slices are dynamic, flexible views inrto arrays
+	// []T is a slice with elements of type T
+	// formed with two indices a[low: high]
+	// Includes first element, excludes last one
+	primes := [6]int{2, 3, 5, 7, 11, 13}
+
+	var slic []int = primes[1:4]
+	fmt.Println(slic)
+
+	// slices just describe an array
+	// changing a slice modifies the array
+	// and other slices pointing to the same array
+
+	names := [4]string{
+		"John",
+		"Paul",
+		"George",
+		"Ringo",
+	}
+	fmt.Println(names)
+
+	a := names[0:2]
+	b := names[1:3]
+	fmt.Println(a, b)
+
+	b[0] = "XXX"
+	fmt.Println(a, b)
+	fmt.Println(names)
+
+	// Slice literals
+	q := []int{2, 3, 5, 7, 11, 13}
+	fmt.Println(q)
+
+	r := []bool{true, false, true, true, false, true}
+	fmt.Println(r)
+
+	sl := []struct {
+		i int
+		b bool
+	}{
+		{2, true},
+		{3, false},
+		{5, true},
+		{7, true},
+		{11, false},
+		{13, true},
+	}
+	fmt.Println(sl)
+
+	// Can omit low or high bound for defaults
+	// 0 for low bound, array length for hight bound
+	// ( Java substring behavior)
+
+	// Slices have length and capacity
+	// length is the number of elements it contaisn
+	// capacity is the # of elements in the underlying array
+	s := []int{2, 3, 5, 7, 11, 13}
+	printSlice(s)
+
+	// Slice the slice to give it zero length.
+	s = s[:0]
+	printSlice(s)
+
+	// Extend its length.
+	s = s[:4]
+	printSlice(s)
+
+	// Drop its first two values.
+	s = s[2:]
+	printSlice(s)
+
+	// expand too much -> out of bounds error
+	// s = s[:100]
+	// printSlice(s)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+
+func arrays() {
+	// [n]T is an array of n values of type T
+	// Arrays cannot be resized
+	var a [2]string
+	a[0] = "Hello"
+	a[1] = "World"
+	fmt.Println(a[0], a[1])
+	fmt.Println(a)
+
+	primes := [6]int{2, 3, 5, 7, 11, 13}
+	fmt.Println(primes)
+
+}
+func vertexes() {
+	fmt.Println(Vertex{1, 2})
+	v := Vertex{7, 2}
+	fmt.Println(v)
+	v.X = 4
+	fmt.Println(v.X)
+	fmt.Println(v)
+
+	p := &v
+	p.X = 1e9
+	fmt.Println(v)
+
+	// Struct literals
+	v1 := Vertex{X: 6, Y: 7}
+	fmt.Println(v1)
+}
+func pointers() {
+	// '*T' is a pointer to a 'T' value
+	// Zero value is 'nil'
+	// the '&' operator gives a pointer to its operand
+	i, j := 42, 2701
+	p := &i
+
+	fmt.Println(*p) // read i through p
+	*p = 21         // set i through p
+	fmt.Println(i)  // new value
+	p = &j
+	*p = *p / 37
+	fmt.Println(j)
+}
+
+func introprinting() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Println("Welcome to the playground")
 	fmt.Println("The time now is", time.Now())
@@ -23,16 +178,28 @@ func main() {
 	fmt.Println("Multiple return function demo. swap 'Hello', 'World' ", a, b)
 	fmt.Println("Factorise 17 , 5 expect 3, 2 result ")
 	fmt.Println(factorise(17, 5))
-
-	vars()
-	types()
-	typeconversions()
-	//bitshifting()
-
-	looping()
-	branching()
 }
 
+func deferingexecution() {
+
+	// Deferred call will wait until the surrounding funtion returns
+	// Deferred calls can be pushed onto a LIFO stack
+	defer fmt.Println("world")
+
+	fmt.Println("Hello, ")
+}
+
+func switches() {
+
+	switch os := runtime.GOOS; os {
+	case "darwin":
+	case "linux":
+		fmt.Println("Linux OS")
+	default:
+		fmt.Println("Default os. OD = ", os)
+	}
+
+}
 func branching() {
 	x := 7
 	if x < 10 {
