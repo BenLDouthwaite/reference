@@ -66,6 +66,21 @@ func maps() {
 		},
 	}
 	fmt.Println(m2)
+
+	elem := m2["Ben"]
+	fmt.Println(elem)
+
+	m2["New Elem"] = Vertex{99.0, 88.0}
+	fmt.Println(m2)
+
+	delete(m2, "Ben")
+	fmt.Println(m2)
+
+	// Testing key existance
+	elem, ok := m2["New Elem"]
+	fmt.Println("Result, elem = ", elem, " & ok = ", ok)
+	elem, ok = m2["False Key"]
+	fmt.Println("Result, elem = ", elem, " & ok = ", ok)
 }
 
 func ranges() {
