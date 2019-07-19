@@ -40,6 +40,40 @@ func main() {
 	sliceAppending()
 	ranges()
 	maps()
+	functionValues()
+	functionClosures()
+}
+
+func functionClosures() {
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i),
+			neg(-2*i),
+		)
+	}
+}
+
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func functionValues() {
+	hypot := func(a, b float64) float64 {
+		return math.Sqrt(a*a + b*b)
+	}
+	fmt.Println(hypot(5, 12))
+
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
+}
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
 }
 
 func maps() {
