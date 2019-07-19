@@ -7,8 +7,6 @@ import (
 	"runtime"
 	"strings"
 	"time"
-
-	"golang.org/x/tour/pic"
 )
 
 var global bool
@@ -21,9 +19,6 @@ type Vertex struct {
 }
 
 func main() {
-	pic.Show(Pic)
-}
-func main2() {
 
 	introprinting()
 
@@ -44,26 +39,6 @@ func main2() {
 	slicingslices()
 	sliceAppending()
 	ranges()
-	picDriver()
-}
-
-func picDriver() {
-	fmt.Println("Show pic")
-	pic.Show(Pic)
-}
-
-func Pic(dx, dy int) [][]uint8 {
-	fmt.Println("Creating pic")
-	mypic := make([][]uint8, dy)
-	for i := 0; i < dy; i++ {
-		mypic[i] = make([]uint8, dx)
-		for j := 0; j < dx; j++ {
-			mypic[i][j] = uint8(i + j)
-		}
-	}
-	fmt.Println("Created pic")
-	return mypic
-	// return [][]uint8{{1, 2}}
 }
 
 func ranges() {
