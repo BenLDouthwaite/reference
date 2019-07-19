@@ -39,6 +39,33 @@ func main() {
 	slicingslices()
 	sliceAppending()
 	ranges()
+	maps()
+}
+
+func maps() {
+	type Vertex struct {
+		Lat, Long float64
+	}
+
+	var m map[string]Vertex
+
+	m = make(map[string]Vertex)
+	fmt.Println(m)
+	m["Test String"] = Vertex{
+		12.34, 56.78,
+	}
+	fmt.Println(m)
+	fmt.Println(m["Test String"])
+
+	var m2 = map[string]Vertex{
+		"Ben": {
+			12.0, 34.0,
+		},
+		"John": {
+			56.0, 78.0,
+		},
+	}
+	fmt.Println(m2)
 }
 
 func ranges() {
