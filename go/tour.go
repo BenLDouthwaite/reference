@@ -42,6 +42,68 @@ func main() {
 	maps()
 	functionValues()
 	functionClosures()
+	methods()
+	interfaces()
+}
+
+type Drinker interface {
+	Drink() string
+}
+type Teacher struct {
+	favDrink string
+}
+type Student struct {
+	favDrink string
+}
+
+// Interfaces are achieved implicitly, no 'implements' keyword
+func (t Teacher) Drink() string {
+	return "Teachers fav drink is " + t.favDrink
+}
+func (s Student) Drink() string {
+	return "Students fav drink is " + s.favDrink
+}
+
+func interfaces() {
+	t := Teacher{favDrink: "Coffee"}
+	s := Student{favDrink: "Juice"}
+
+	var d Drinker
+	d = &t
+	fmt.Println(d.Drink())
+
+	drinkers := make([]Drinker, 2)
+	drinkers[0] = t
+	drinkers[1] = s
+
+	fmt.Println(drinkers)
+
+	for _, drinker := range drinkers {
+		fmt.Println(drinker.Drink())
+	}
+}
+
+func (v Vertex) SumSquares() int {
+	return (v.X*v.X + v.Y*v.Y)
+}
+
+// Required to be a pointer receiver,
+// or will be operating on a copy of the value
+
+// while methods with pointer receivers take either
+// a value or a pointer as the receiver when
+func (v *Vertex) Scale(f int) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+
+func methods() {
+	v := Vertex{3, 4}
+	fmt.Println(v.SumSquares())
+
+	fmt.Println(v)
+	v.Scale(3)
+	fmt.Println(v)
 }
 
 func functionClosures() {
