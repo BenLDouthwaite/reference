@@ -5,7 +5,10 @@ import (
 	"math"
 	"math/rand"
 	"runtime"
+	"strings"
 	"time"
+
+	"golang.org/x/tour/pic"
 )
 
 var global bool
@@ -18,6 +21,9 @@ type Vertex struct {
 }
 
 func main() {
+	pic.Show(Pic)
+}
+func main2() {
 
 	introprinting()
 
@@ -35,10 +41,96 @@ func main() {
 	arrays()
 	slices()
 	slicemaking()
+	slicingslices()
+	sliceAppending()
+	ranges()
+	picDriver()
+}
+
+func picDriver() {
+	fmt.Println("Show pic")
+	pic.Show(Pic)
+}
+
+func Pic(dx, dy int) [][]uint8 {
+	fmt.Println("Creating pic")
+	mypic := make([][]uint8, dy)
+	for i := 0; i < dy; i++ {
+		mypic[i] = make([]uint8, dx)
+		for j := 0; j < dx; j++ {
+			mypic[i][j] = uint8(i + j)
+		}
+	}
+	fmt.Println("Created pic")
+	return mypic
+	// return [][]uint8{{1, 2}}
+}
+
+func ranges() {
+	pow := make([]int, 10)
+	for i := range pow {
+		pow[i] = 1 << uint(i) // == 2**i
+	}
+
+	// Similar to Java 'for each'
+	for i, v := range pow {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+
+	// Can inline range definition. Use '_' to ignore index or value
+	for _, v := range []int{1, 2, 3} {
+		fmt.Printf("v = %d\n", v)
+	}
+}
+
+func sliceAppending() {
+	var s []int
+	printSlice(s)
+
+	// append works on nil slices.
+	s = append(s, 0)
+	printSlice(s)
+
+	// slice grows as needed
+	s = append(s, 1)
+	printSlice(s)
+
+	// Can append many elements at once
+	s = append(s, 2, 3, 4)
+	printSlice(s)
+}
+
+func slicingslices() {
+	// Create a tic-tac-toe board.
+	board := [][]string{
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+	}
+
+	// The players take turns
+	board[0][0] = "X"
+	board[0][2] = "0"
+	board[2][0] = "X"
+
+	for i := 0; i < len(board); i++ {
+		fmt.Printf("%s\n", strings.Join(board[i], " "))
+	}
 }
 
 func slicemaking() {
 	// TODO https://tour.golang.org/moretypes/13
+	a := make([]int, 5)
+	printSlice(a)
+
+	b := make([]int, 0, 5)
+	printSlice(b)
+
+	c := b[:2]
+	printSlice(c)
+
+	d := c[2:5]
+	printSlice(d)
 }
 
 func slices() {
