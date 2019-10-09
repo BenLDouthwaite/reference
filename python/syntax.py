@@ -1,7 +1,7 @@
 
 # If statements
-# x = int(input("Please enter an integer: "))
-x = 12
+x = int(input("Please enter an integer: "))
+# x = 12
 if x < 0:
     x = 0
     print('Negative changed to zero')
@@ -38,3 +38,7 @@ parrot(voltage=1000000, action='VOOOOOM')             # 2 keyword arguments
 parrot(action='VOOOOOM', voltage=1000000)             # 2 keyword arguments
 parrot('a million', 'bereft of life', 'jump')         # 3 positional arguments
 parrot('a thousand', state='pushing up the daisies')  # 1 positional, 1 keyword
+
+answer = input("Will i meet dave chapelle").strip()
+if answer == "yes" or answer == "yup" or answer == "y" or answer == "ye":
+    print("yes indeedy")
