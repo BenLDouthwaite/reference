@@ -2,10 +2,13 @@
 
 ## Commands
 
-`build`
+* `build`
 
 example : `docker build  -t tagname .` to build the file in the current directory and tag with 'tagname'
 
+* `run`
+
+example : `docker run =p 8080:8080 tagname` to run and expose the specified ports to be accessible
 
 ## Exec into a container at a specifc directory
 
