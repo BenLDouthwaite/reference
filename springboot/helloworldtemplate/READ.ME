@@ -1,1 +1,14 @@
 # Hello World Springboot template
+
+## Docker commands
+
+to build the dummy app, run `docker build .`
+
+to build all the required dependencies in the target directory:
+
+Run the following to build the jar
+`mvn package`
+`docker build -t tagname .`
+`docker run -p 8080:8080 tagname`
+
+and the project should be exposing the port on docker to view on 8080

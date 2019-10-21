@@ -1,5 +1,12 @@
 # Docker
 
+## Commands
+
+`build`
+
+example : `docker build  -t tagname .` to build the file in the current directory and tag with 'tagname'
+
+
 ## Exec into a container at a specifc directory
 
 docker exec -it container-name bash -c 'cd /var/www/html; exec "${SHELL:-sh}"'
