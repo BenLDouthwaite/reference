@@ -5,11 +5,24 @@
 `gcloud projects list`
 View the projects associated with the logged in google cloud account
 
+`gcloud projects delete [PROJECT_ID]`
+Delete the project
+
 `gcloud config set project [YOUR_PROJECT_ID]`
 Set the currently selected project on local machine to control deployments
 
+`gcloud config set compute/zone [ZONE_ID]`
+example 'asia-northeast1'
+
+`gcloud container clusters create personal-website --num-nodes=2`
+Create clusters for 'personal-website' with 2 nodes
+
+
+
 `gcloud app browse`
 Load the app in browser
+
+
 
 ## Java Bookshelf
 

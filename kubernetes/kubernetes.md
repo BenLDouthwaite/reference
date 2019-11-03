@@ -70,6 +70,8 @@ We can describe a failing pod
 Example:
 `kubectl describe pod failing-pod-name`
 
+`kubectl rollout restart deployment/deployment-name`
+
 # Minikube
 
 ## Commands
@@ -105,3 +107,25 @@ View a GUI dashboard in browser
 
 * Run the service on minikube
 `minikube service my-dep-name`
+
+`kubectl get deployments -o wide`
+Allows us to see the image version
+
+`kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:v0.0.4`
+
+Probably not the best steps for updating the image but they work...
+```
+docker build -t benldouthwaite/personal-website:latest .
+docker push benldouthwaite/personal-website:latest
+kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:latest
+```
+
+TODO Look up imagePullPolicy. Would be cool to get this setup
+
+## Mamaging your cluster
+
+Minikube is configured to persist files stored under the following host directories:
+
+/data
+/var/lib/minikube
+/var/lib/docker
