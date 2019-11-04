@@ -74,6 +74,12 @@ Example:
 
 # Minikube
 
+## Notes
+
+By defult, created with limited cpu and memory,
+must stop and delete minikube before recreating with more cpu and mem
+e.g. `minikube stop && minikube delete && minikube start --cpus 4 --memory 8192`
+
 ## Commands
 
 `minikube start`
