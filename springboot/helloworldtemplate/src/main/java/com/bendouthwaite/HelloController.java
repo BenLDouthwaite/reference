@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 public class HelloController {
 
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin
     @RequestMapping(value = "/hello")
     public List<String> hello(@RequestParam(value = "name", defaultValue = "Ben") String name) {
         if ("".equals(name)) {
