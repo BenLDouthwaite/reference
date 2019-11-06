@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: back-end
-        image: benldouthwaite/base-api:dev
+        image: benldouthwaite/base-api:v0.0.9
         ports:
         - containerPort: 8081
 ---

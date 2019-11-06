@@ -1,3 +1,3 @@
 mvn package
-docker build -t benldouthwaite/base-api:dev .
-docker push benldouthwaite/base-api
+docker build -t benldouthwaite/base-api:latest .
+docker push benldouthwaite/base-api:latest
