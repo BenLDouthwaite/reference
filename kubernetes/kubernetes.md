@@ -75,6 +75,10 @@ Example:
 
 `kubectl rollout restart deployment/deployment-name`
 
+To view the logs from a running container, run:
+
+`kubectl logs -f pod-name`
+
 # Minikube
 
 ## Notes
