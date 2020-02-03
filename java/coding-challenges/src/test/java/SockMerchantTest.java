@@ -36,8 +36,20 @@ public class SockMerchantTest {
     }
 
     @Test
+    public void testSockMerchant_manySocksOfOneColour() {
+        int[] socks = {1,1,1,1,1,1,1,1,1,1,1,1};
+        testSocksMatching(socks, 6);
+    }
+
+    @Test
     public void testSockMerchant_manySocksAllPairs() {
         int[] socks = {1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10};
+        testSocksMatching(socks, 10);
+    }
+
+    @Test
+    public void testSockMerchant_manySocksManyPairsOneRemainderForEachColour() {
+        int[] socks = {1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10};
         testSocksMatching(socks, 10);
     }
 
