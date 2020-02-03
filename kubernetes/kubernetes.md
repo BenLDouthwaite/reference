@@ -56,6 +56,9 @@ Expose a pod to public internet
 example:
 `kubectl expose deployment hello-node --type=LoadBalancer --port=8080`
 
+TODO w** Because I've done this at least 5 times now, after running the above command locally, run the service via minikube (see below)
+to make sure it's actually accessible. Delete this once I stop being an idiot and actually remember **
+ 
 On cloud providers that support load balancers, an external IP address would be provisioned to access the Service. On Minikube, the LoadBalancer type makes the Service accessible through the minikube service command.
 `minikube service hello-node`
 This will open the service in a browser
@@ -70,7 +73,19 @@ We can describe a failing pod
 Example:
 `kubectl describe pod failing-pod-name`
 
+`kubectl rollout restart deployment/deployment-name`
+
+To view the logs from a running container, run:
+
+`kubectl logs -f pod-name`
+
 # Minikube
+
+## Notes
+
+By defult, created with limited cpu and memory,
+must stop and delete minikube before recreating with more cpu and mem
+e.g. `minikube stop && minikube delete && minikube start --cpus 4 --memory 8192`
 
 ## Commands
 
@@ -105,3 +120,25 @@ View a GUI dashboard in browser
 
 * Run the service on minikube
 `minikube service my-dep-name`
+
+`kubectl get deployments -o wide`
+Allows us to see the image version
+
+`kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:v0.0.4`
+
+Probably not the best steps for updating the image but they work...
+```
+docker build -t benldouthwaite/personal-website:latest .
+docker push benldouthwaite/personal-website:latest
+kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:latest
+```
+
+TODO Look up imagePullPolicy. Would be cool to get this setup
+
+## Mamaging your cluster
+
+Minikube is configured to persist files stored under the following host directories:
+
+/data
+/var/lib/minikube
+/var/lib/docker
