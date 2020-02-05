@@ -1,3 +1,5 @@
+package warmup;
+
 public class CountingValleys {
 
     private static final char DOWNHILL = 'D';

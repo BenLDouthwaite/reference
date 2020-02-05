@@ -1,4 +1,7 @@
+package warmup;
+
 import org.junit.Test;
+import warmup.JumpingOnTheClouds;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;

@@ -1,3 +1,5 @@
+package warmup;
+
 public class RepeatedString {
 
     // Complete the repeatedString function below.
