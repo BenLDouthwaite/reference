@@ -58,7 +58,7 @@ example:
 
 TODO w** Because I've done this at least 5 times now, after running the above command locally, run the service via minikube (see below)
 to make sure it's actually accessible. Delete this once I stop being an idiot and actually remember **
- 
+
 On cloud providers that support load balancers, an external IP address would be provisioned to access the Service. On Minikube, the LoadBalancer type makes the Service accessible through the minikube service command.
 `minikube service hello-node`
 This will open the service in a browser
@@ -78,6 +78,14 @@ Example:
 To view the logs from a running container, run:
 
 `kubectl logs -f pod-name`
+
+## Mysql setup
+
+To setup a client for testing the local mysql imaget
+
+```
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+```
 
 # Minikube
 

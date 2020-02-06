@@ -2,3 +2,5 @@
 .git
 reference.iml
 .vscode
+**/target
+**.iml

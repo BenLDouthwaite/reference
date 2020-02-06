@@ -46,11 +46,15 @@ https://git-scm.com/docs/git-submodule
 
 Git allows us to nest projects within each other
 
-`git submodule add [url`
+`git submodule add [url]`
 
 E.g. The 'lessons' project, and the personal website project both use this 'reference' project as a submodule.
 
 This allows us to keep a single source of data, and avoid repetition.
+
+To update all git submodulesa t once, you can run 
+
+`git submodule update --recursive --remote`
 
 ## Common Problems
 ### Changing author of the last commit.
@@ -60,7 +64,7 @@ git commit --amend --author="FIRSTNAME LASTNAME <email@address.com>"
 ### Changing the message of the last commit (before push)
 
 `git commit --amend` and edit in vi based interface
- 
+
 ### Changing the file mode to avoid conflicts between operating systems
 
 To ignore file mode changes e.g

@@ -17,3 +17,6 @@ SELECT profession_id,
 FROM users
 GROUP BY profession_id;
 ```
+
+## Make database
+

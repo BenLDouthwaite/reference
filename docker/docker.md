@@ -23,3 +23,11 @@ alias customDockerExe='docker exec -it container-name bash -c "cd /var/www/html/
 use `host.docker.internal` on docker for windows version 18.01 +
 
 https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
+
+## Delete all images
+
+`docker rmi $(docker images -a -q)`
+
+## Delete all stopped containers
+
+`docker rm $(docker ps -qa)`

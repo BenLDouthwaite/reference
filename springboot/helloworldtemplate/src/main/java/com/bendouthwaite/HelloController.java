@@ -20,4 +20,25 @@ public class HelloController {
             return Collections.singletonList(name);
         }
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/bye")
+    public List<String> bye(@RequestParam(value = "name", defaultValue = "Bye BYe baby") String name) {
+        if ("".equals(name)) {
+            return Collections.singletonList("Bye test 1");
+        } else {
+            return Collections.singletonList(name);
+        }
+    }
+
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/test")
+    public List<String> test(@RequestParam(value = "name", defaultValue = "test for the best of the rest") String name) {
+        if ("".equals(name)) {
+            return Collections.singletonList("test test 2");
+        } else {
+            return Collections.singletonList(name);
+        }
+    }
 }
