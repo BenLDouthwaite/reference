@@ -10,7 +10,12 @@ class TestMyMath(unittest.TestCase):
 
 		result = increment(input)
 
-		self.assertEqual(result, expectedResult);
+		self.assertEqual(result, expectedResult)
 
-if __name__ == '__main__':
-    unittest.main()
+	def test_increment_2(self):
+		input = 0
+		expectedResult = 1
+
+		result = increment(input)
+
+		self.assertEqual(result, expectedResult)
