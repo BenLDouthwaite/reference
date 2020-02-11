@@ -1,4 +1,4 @@
-package main
+package robotMovement
 
 import "testing"
 
@@ -27,8 +27,6 @@ func Test_robotMovement(t *testing.T) {
 		{"Far South East", args{inputString: "SESESESESE" }  , 10},
 		{"Circle 1 each dir", args{inputString: "NESW" }  , 0},
 		{"Circle 3 each dir", args{inputString: "NNNEEESSSWWW" }  , 0},
-
-
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
