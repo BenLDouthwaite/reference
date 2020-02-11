@@ -1,5 +1,9 @@
 # GO 
 
+## TODO
+
+[] Read up on package structure
+
 ## Compile a program 
 
 `go build filename.go`
