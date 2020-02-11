@@ -1,16 +1,23 @@
 package main
 
 import (
-	"fmt"
+	"math"
 	"strings"
 )
 
 func robotMovement(inputString string) int {
 	characters := strings.Split(inputString, "")
 
-	for c := range characters {
-		fmt.Println(c)
+	xStepCount := 0
+	yStepCount := 0
+	for i := 0; i < len(characters); i++ {
+		s := characters[i]
+		switch s {
+		case "N": yStepCount++
+		case "E": xStepCount++
+		case "S": yStepCount--
+		case "W": xStepCount--
+		}
 	}
-	fmt.Println(inputString)
-	return 1
+	return int(math.Abs(float64(xStepCount)) + math.Abs(float64(yStepCount)))
 }
