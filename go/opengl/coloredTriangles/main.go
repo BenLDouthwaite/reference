@@ -5,51 +5,55 @@ import (
 	"log"
 	"runtime"
 	"strings"
-	"time"
 
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/gl/v4.1-core/gl" // OR: github.com/go-gl/gl/v2.1/gl
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 const (
-	width = 500
+	width  = 500
 	height = 500
-	rows = 20
-	columns = 20
-	threshold = 0.15
-	fps = 5
 
 	vertexShaderSource = `
-    #version 410
-    in vec3 vp;
-    void main() {
-        gl_Position = vec4(vp, 1.0);
-    }
-` + "\x00"
+		#version 410
+		layout(location = 0) in vec3 vp;
+		layout(location = 1) in vec3 vc;
+		out vec3 fragmentColor;
+		void main() {
+			gl_Position = vec4(vp, 1.0);
+			fragmentColor = vc;
+		}
+	` + "\x00"
 
 	fragmentShaderSource = `
-    #version 410
-    out vec4 frag_colour;
-    void main() {
-        frag_colour = vec4(1.0, 1.0, 0.95, 1);
-    }
-` + "\x00"
-
+		#version 410
+		in vec3 fragmentColor;
+		out vec4 color;
+		void main() {
+			color = vec4(fragmentColor, 1.0);
+		}
+	` + "\x00"
 )
 
 var (
-	// By providing many in a row, it interprets as multiple triangles.
-	square = []float32{
+	triangle = []float32{
+		-0.5, 0.5, 0,
+		-0.5, -0.5, 0,
+		0.1, -0.5, 0,
 
-		// First Tri
-		-0.5, 0.5, 0, // top
-		-0.5, -0.5, 0, // left
-		0.5, -0.5, 0, // right
+		0.0, 0.5, 0,
+		0.5, -0.5, 0,
+		0.5, 0.5, 0,
+	}
 
-		// Second Tri
-		-0.5, 0.5, 0.0, // top left
-		0.5, 0.5, 0, // top right
-		0.5, -0.5, 0, // bottom right
+	triangleColor = []float32{
+		0.9,  0.1,  0.1,
+		0.1,  0.9,  0.1,
+		0.1,  0.1,  0.9,
+
+		0.9,  0.1,  0.1,
+		0.1,  0.9,  0.1,
+		0.1,  0.1,  0.9,
 	}
 )
 
@@ -58,47 +62,35 @@ func main() {
 
 	window := initGlfw()
 	defer glfw.Terminate()
-
 	program := initOpenGL()
 
-	cells := makeCells()
-
+	vao := makeVao(triangle, triangleColor)
 	for !window.ShouldClose() {
-		t := time.Now()
-		for x := range cells {
-			for _, c := range cells[x] {
-				c.checkState(cells)
-			}
-		}
-
-		draw(cells, window, program)
-
-		time.Sleep(time.Second/time.Duration(fps) - time.Since(t))
-
-		if !anyAlive(cells) {
-			window.SetShouldClose(true)
-		}
+		draw(vao, window, program)
 	}
 }
 
-func anyAlive(cells [][]*cell) bool {
-	for x := range cells {
-		for _, c := range cells[x] {
-			if c.alive {
-				return true
-			}
-		}
-	}
-	return false
+func draw(vao uint32, window *glfw.Window, program uint32) {
+
+	// Background
+	gl.ClearColor(0.1, 0.2, 0.3, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.UseProgram(program)
+
+	gl.BindVertexArray(vao)
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(triangle)/3))
+
+	glfw.PollEvents()
+	window.SwapBuffers()
 }
 
+// initGlfw initializes glfw and returns a Window to use.
 func initGlfw() *glfw.Window {
 	if err := glfw.Init(); err != nil {
 		panic(err)
 	}
-
 	glfw.WindowHint(glfw.Resizable, glfw.False)
-	glfw.WindowHint(glfw.ContextVersionMajor, 4) // OR 2
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
@@ -112,19 +104,19 @@ func initGlfw() *glfw.Window {
 	return window
 }
 
+// initOpenGL initializes OpenGL and returns an intiialized program.
 func initOpenGL() uint32 {
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
-
 	version := gl.GoStr(gl.GetString(gl.VERSION))
-	log.Println("OpenGL Version", version)
+	log.Println("OpenGL version", version)
 
-	// TODO Copy from demo until working.
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
 		panic(err)
 	}
+
 	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
 	if err != nil {
 		panic(err)
@@ -137,35 +129,31 @@ func initOpenGL() uint32 {
 	return prog
 }
 
-func draw(cells [][]*cell, window *glfw.Window, program uint32) {
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.UseProgram(program)
-
-	for x := range cells {
-		for _, c := range cells[x] {
-			c.draw()
-		}
-	}
-
-	glfw.PollEvents()
-	window.SwapBuffers()
-}
-
-func makeVao(points []float32) uint32 {
+// makeVao initializes and returns a vertex array from the points provided.
+func makeVao(points []float32, pointsColors []float32) uint32 {
 
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
 
+	var colorVbo uint32
+	gl.GenBuffers(1, &colorVbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, colorVbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(pointsColors), gl.Ptr(pointsColors), gl.STATIC_DRAW)
+
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+
+	// Points - Index 0 because in the vertex shader, that maps to position
 	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 
+	// Points Colours - Index 1 because in the vertex shader, that maps to colour
 	gl.EnableVertexAttribArray(1)
+	gl.BindBuffer(gl.ARRAY_BUFFER, colorVbo)
 	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 0, nil)
 
 	return vao
