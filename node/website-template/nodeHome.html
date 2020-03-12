@@ -1,0 +1,104 @@
+Plural sight:
+What is node js?
+
+Server side javscript, open source server side runtime environment Not a language.
+cross platform.
+Uses javascript as its language.
+
+What is express?
+Express is a web development framework, lightweigh unoopinionated and minimalist 
+an npm package sitting inside node
+
+Node is just a wrapper around javascript and allows us to executre commands, e.g. in a terminal run node and in the command liine use console.log to output a string back to the command line.
+
+We can also simply create a javascript file and run it in a command prompt by typing node filename.js
+
+teh whole application is a single file that gets executed, thisis the idea behind single page web apps that are popular for their power.
+
+npm is the package management system for node.js, all pulled in using npm.
+npm deals with versions for you 
+
+can use npm init to configure a packjage.json file, used to keep track of dependencies installed in application.
+
+we need express so use
+npm install express --save
+--save adds dependencies to package.json file
+
+npm will install any same major version and deal with versioning for us
+can use a ^ for major version, or ~for minor version. or just put specific version number in
+
+Javascript, a callback is a function that app.listen will execute
+
+we need a standard way to execute the application, use npm for this
+add start to scripts in package.json 
+
+running 'npm start' is standard to get code up and running 
+
+app.get = home route, run on local host to view results
+
+Use bootstrap or templates to improve UI. e.g. bootstrapzero
+
+setup public directory as static directory that express server will serve up
+
+app.use setsup what will be used by express first.
+can make any files a static folder to load before routing
+
+in order to use all the latestversions of bootstrap / jquery etc use bower = front end system.
+
+Bower = package manager for the front end  (mathces with npm for backend)
+bower has flat package hierarchy, does not install dependencies
+have a bower.json to match package.json
+ 
+npm istall bower -g
+run 'bower' command to see if it's instaled.
+start with bower init
+
+needed git installed to run from windows command prompt
+
+bower intsall --save bootstrap
+also downloaded all dependencies for the package, jquery for bootstrap
+
+all installed into bower-componenets automatically. we configure bower to install to public
+create .bowerrc file, simply json but key needs to be in quotes! 
+
+{
+	"directory": "public/lib"
+}
+
+to separate out all packages coming form bower
+
+bower install font-awesome --save
+
+alter index.html to link to correct files now in public/lib
+
+Using GULP to automate...
+
+Gulp is a task manager for web projects 
+installed with npm
+easy to use
+code based config
+package based
+
+using JSHint for code quality enforcement
+detects errors, enforces coding conventions and is configurable & open source
+Also JSCS for code styles
+code style enforcement e.g. indentations
+
+.jscsrc and .jshintrc are config files
+
+use gulp to inject bower packages into html
+use wiredep
+
+use bower:js comment in html and gullp inject to inject js
+use overrides for css
+
+nodemon to monitor files and auto update server
+
+jade is a templating enjine that runs through a compiler
+jade removes tags
+whitespace and tab based
+jade operates as javascrit
+
+in gulpfile change .src to *.jade instead of .html
+
+handlebars is a minimalist templating engine to write html and plugin ars and functionality as needed.
