@@ -11,7 +11,6 @@ func Test_evenFibonacciNumbers(t *testing.T) {
 		args args
 		want int
 	}{
-		// TODO: Add test cases.
 		{"10_PD1", args{10}, 10}, // 10 is the lower bound
 		{"100_PD2", args{100}, 44},
 		{"100_PD2", args{100}, 44},

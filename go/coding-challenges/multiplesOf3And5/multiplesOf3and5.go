@@ -10,7 +10,7 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	numberOfTestCases, _ := strconv.Atoi(scanner.Text())
+	numberOfTestCases , _ := strconv.Atoi(scanner.Text())
 	for i := 0; i < numberOfTestCases; i++ {
 		scanner.Scan()
 		input, _ := strconv.Atoi(scanner.Text())

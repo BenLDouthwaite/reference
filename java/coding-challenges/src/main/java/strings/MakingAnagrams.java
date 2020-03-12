@@ -1,11 +1,6 @@
 package strings;
 
-import com.sun.xml.internal.fastinfoset.algorithm.IntegerEncodingAlgorithm;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MakingAnagrams {
@@ -28,6 +23,8 @@ public class MakingAnagrams {
 
         Set<Character> charsUnion = new HashSet<>(aCharCount.keySet());
         charsUnion.addAll(bCharCount.keySet());
+
+        bCharCount.finalize()
 
         int charaRemovalCount = 0;
         for(Character c: charsUnion) {
