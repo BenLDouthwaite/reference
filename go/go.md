@@ -1,9 +1,14 @@
 # GO 
 
-## TODO
+## Language features
 
-[] Read up on package structure
-
+* Go is pass by value
+* Can define receiver with a pointer to a type, we can call methods on the type directly. (See structs dir example)
+    * If a receiver is not used in a function, we can define only the type in the method definition.
+* Go contains reference types and value types. We can ignore pointers with reference types (inc slices)
+    * Value Types: int, float, string, bool, structs
+    * Reference Types: slices, maps, channels, pointers, functions
+    
 ## Go CLI commands
 
 Run:`go run filename.go`
@@ -18,14 +23,18 @@ Test: `go test`
 When two + function parameters share a type, you can omit from all but the last
 `x int, y int` -> `x, y int`
 
-can assin vars to functions.
+can assign vars to functions.
 `func t1() {...}
 t2 := t1
 t2()` is valid
 
+Printing custom structs with labels for values
+`fmt.Printf("%+v", alex)`
+
 ## Data Structures
 
 * Array: Fixed length list of things
+    * Rarely used in go, seen as primitive
 * Slice: Array that can grow or shrink
     * Every record in a slice must be of the same type  
     * Define slice: `mySlice := []string{"Hi", "World"}`
@@ -33,12 +42,22 @@ t2()` is valid
     * Subslices: `mySlice[startIndex:upToNotIncludingIndex]`
         * Excluding either index implies the start or end of the slice      
 * Type: we can extend base types to add extra functionality
-`type myStrings []string`
-And add functions with 'myStrings' as a receiver
-`type (m myStrings) print() {...}`
-`m myStrings` acts as the receiver type
-Any variable of type `myStrings` now gets access to the 'print' method
+    `type myStrings []string`
+    And add functions with 'myStrings' as a receiver
+    `type (m myStrings) print() {...}`
+    `m myStrings` acts as the receiver type
+    Any variable of type `myStrings` now gets access to the 'print' method
 * Struct
+    * Keys are not strongly types. Can access with dot syntax
+    * Value type
+* Maps
+    * Keys and values are statically typed
+    * Reference type
+* Interfaces
+    * Any type matching the interface, can use the methods for the interface type.
+    * Can 'nest' interfaces, must meet requirements of all.
+    
+    
 ## Project Layout
 
 All files in the same package (directory) need to declare
