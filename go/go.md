@@ -8,7 +8,15 @@
 * Go contains reference types and value types. We can ignore pointers with reference types (inc slices)
     * Value Types: int, float, string, bool, structs
     * Reference Types: slices, maps, channels, pointers, functions
-    
+* Go allows easy implementation of concurrency
+    * The Go Scheduler manages go routines
+    * By default, go uses 1 CPU core!
+    * easy to finish the main routine while child routines are not finished
+    * use channels to talk between routines
+        * channels are typed
+    * Never access the same variable from child routines, pass in as arg / via channels
+* Go supports function literals
+
 ## Go CLI commands
 
 Run:`go run filename.go`
@@ -30,6 +38,17 @@ t2()` is valid
 
 Printing custom structs with labels for values
 `fmt.Printf("%+v", alex)`
+
+Use the `go` keyword to create new goroutines
+
+To send data into channels `channel <- 5`
+Can wait for values to be sent to the channel `fmt.Println(<- channel)`
+
+Go routine with function literal and sleep
+`go func(s string) {
+    time.Sleep(time.Second)
+    checkSite(s, c)
+}(s)`
 
 ## Data Structures
 
