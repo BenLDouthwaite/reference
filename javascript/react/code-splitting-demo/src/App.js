@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class App extends Component {
-
-handleClick = () => {
-    import('./moduleA')
+  handleClick = () => {
+    import("./moduleA")
       .then(({ moduleA }) => {
         alert(moduleA);
       })
-      .catch(err => {
+      .catch((err) => {
         // Handle failure
       });
   };
@@ -15,7 +14,7 @@ handleClick = () => {
   render() {
     return (
       <div className="App">
-          <button onClick={this.handleClick}>Load</button>
+        <button onClick={this.handleClick}>Load</button>
       </div>
     );
   }
