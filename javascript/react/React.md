@@ -8,6 +8,38 @@ Javascript library to make UIs and handle user interaction
 -- Can be nested, reused, and configured
 -- Named in upper case e.g. MyComponent
 -- When nesting components they are available in props.children
+-- Can provide defaultProps
+- State
+-- Can only be updated using `setState`
+- Constructor
+-- Specific to JS, not react
+
+## Best practices
+
+- Do not have multiple return statements in a render method, can create `renderContent` method if needed 
+- Put component at the top of the file
+
+## Syntax
+
+- Can use ternary expressions in jsx `return <div>{boolExpr ? 'true' : 'false'</div>`
+- Can initialise state directly at the top of a component as an instance variable, constructor is not needed.
+
+## Lifecycle methods / react methods
+
+- render : return JSX
+- componentDidMount : Data loading
+- componentDidUpdate : - Data load per props / state change
+- componentWillUnmount : 
+
+## Class components vx functional components
+
+- Functional Components : Show simple data to the user
+- Class components : everything else!
+-- Easier code organisation
+-- Can use state to handle user input
+-- Understand lifecycle events
+
+- Webstorm can auto-refactor from functional component to class component.
 
 ## JSX vs HTML
 
