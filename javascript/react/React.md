@@ -18,6 +18,7 @@ Javascript library to make UIs and handle user interaction
 
 - Do not have multiple return statements in a render method, can create `renderContent` method if needed 
 - Put component at the top of the file
+- Prefer controller to uncontrolled components
 
 ## Syntax
 
@@ -73,6 +74,7 @@ https://babeljs.io/
 
 Command line tool to convert between versions of javascript
 `ES2015 JS -> Babel -> ES5 JS`
+Arrow functions are a feature of ES2015
 
 Included in `create-react-app`
 
