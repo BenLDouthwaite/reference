@@ -2,6 +2,10 @@
 
 Javascript library to make UIs and handle user interaction
 
+React is split into 2 libraries:
+* React - How to use components
+* ReactDOM - How to render components into the screen
+
 ## Glossary
 
 - Component : A Function or a Class, to produce html to the user and/or handle user interaction
