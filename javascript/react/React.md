@@ -22,7 +22,7 @@ React is split into 2 libraries:
 
 - Do not have multiple return statements in a render method, can create `renderContent` method if needed 
 - Put component at the top of the file
-- Prefer controller to uncontrolled components
+- imports for libraries go above imports for other files from the project
 
 ## Syntax
 
@@ -46,6 +46,10 @@ React is split into 2 libraries:
 
 - Webstorm can auto-refactor from functional component to class component.
 
+## Async await. 
+
+- Async before the call, set response as avalue with await
+
 ## JSX vs HTML
 
 - JSX: `<div style={{ backgroundColor: 'red' }}</div>` vs HTML `<div style="background-color: red;"></div>`
@@ -66,6 +70,10 @@ create-react-app is a single line command to quickly generate a react project.
 - package-lock.json : Record exact version of installed packages
 - README.md : Instructions for the project
 
+## HTTP Libs. axios vs fetch
+
+- axios is chill.
+
 ## Misc Notes
 
 - `import` refers to ES2015 Modules, `require` refers to CommonJS Modules
@@ -78,7 +86,6 @@ https://babeljs.io/
 
 Command line tool to convert between versions of javascript
 `ES2015 JS -> Babel -> ES5 JS`
-Arrow functions are a feature of ES2015
 
 Included in `create-react-app`
 
@@ -93,3 +100,4 @@ Used for 'opinionated' styling
 ## Semantic UI
 
 UI components : https://semantic-ui.com/ 
+

@@ -10,6 +10,9 @@ import (
 	"strings"
 )
 
+const st = "TODO" // Search Term
+const maxLen = 120
+
 func main() {
 
 	// TODO Provide context
@@ -55,13 +58,16 @@ func readFile(fileName string) {
 	for scanner.Scan() {
 		lc++
 		text := scanner.Text()
-		if strings.Contains(text, "TODO") {
+		if strings.Contains(text, st) {
+			text = trimText(text)
+			outputText := getOutputText(text)
+
 			fmt.Print(
 				tf(35, fileName),
 				":",
 				tf(31, strconv.Itoa(lc)),
 				"\t",
-				strings.TrimSpace(text),
+				outputText,
 				"\n")
 		}
 	}
@@ -69,6 +75,35 @@ func readFile(fileName string) {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func trimText(text string) string {
+	text = strings.TrimSpace(text)
+	if len(text) > maxLen {
+		index := strings.Index(text, st)
+		contextLength := (maxLen - len(st)) / 2
+		start := 0
+		if index-contextLength > 0 {
+			start = index - contextLength
+		}
+		end := len(text)
+		if index+contextLength < len(text) {
+			end = index + contextLength
+		}
+
+		text = text[start:end]
+	}
+	return text
+}
+
+func getOutputText(text string) string {
+	index := strings.Index(text, st)
+
+	returnText := fmt.Sprint(
+		text[:index],
+		tf(32, st),
+		text[index+len(st):])
+	return returnText
 }
 
 // Terminal Format
