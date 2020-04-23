@@ -449,3 +449,143 @@ BRAIN DUMP
 -- Limited Health Checks
 -- Routing Policy
 - Prefer Alias to CNAME for AWS resources (for performance reasons)
+
+## RDS
+
+- Relational Database Service - managed by AWS
+- Query with SQL: Postgres, Oracle, MySQL, MariaDB, Oracle, Microsoft SQL Server, Aurora (AWS DB)
+-- Has scaling capability
+-- Can't SSH into RDS instances
+- Can create read replicas for scalability. ( upto 5)
+-- Same AZ, cross AZ, or cross region.
+-- Replication is ASYNC - Eventually consistent
+-- Replicas can be promoted to their own DB
+-- Application must update connection string to leverage read replicas
+- Multi AZ
+-- SYNC Replication (Standby, to separate AZ)
+-- Only one DNS exposed to app.
+--- Failover from master to standby
+-- Increase *Availability*
+-- No Manual Intervention
+- RDS Backups
+-- Automatically enabled.
+-- Daily snapshot
+-- Transaction logs to restore to any point in time. 
+-- 7 Days retention, up to 35 days. 
+-- DB Snapchots triggered by the user
+- Security
+-- Encryption at rest. - with KMS - AES-256
+-- SSL Certs to encrypt data in flight
+-- To Enforce SSL:
+--- Postgres: rds.force_ssl=1 in AWS console
+--- MySQL: Within DB `GRANT USAGE ON *.* TO 'mysqluser'@'%' REQUIRE SSL`
+-- To Connect using SSL
+--- Provide SSL Trust cert (download from AWS)
+--- Provide SSL Options when connecting to DB
+- Security
+-- RDS DB deployed to private subnet
+-- Uses security Groups to control who can communicate with RDS
+-- IAM policies to control who can manage AWS RDS
+-- username and password to login to the db OR use IAM for MySQL / Aurora
+- RDS vs Aurora
+-- Aurora proprietary from AWS
+-- Postgres and MySQL supported by Aurora
+-- Aurora is cloud-optimised -> Claims 5x over MYsql, 3x over postgres.
+-- Failover, HA native by default.
+-- Aurora is NOT free-tier compatible
+
+### RDS - Creation Steps
+
+1. Console -> RDS service -> Databases -> Create Database
+2. Select Engine Options e.g. MySQL
+3. Selct Template -> Probably Free Tier
+4. Choose DB ID , unique across region
+5. Set username and password
+6. Choose DB instance size (locked for free-tier)
+7. Choose Storage
+8. Availability, choose if we want a standy db
+9. Choose publicly available: usually no, yes for demo to test 
+
+### AWS Elasticache
+
+- ElastiCache is to get managed Redis or Memcached
+-- In memory DB, high perf, low latency
+-- Reduce load off DBs
+-- Make application stateless
+-- Write scaling with sharding
+-- Read shaling with read replicas
+-- MultiAZ with failover
+-- AWS managed
+
+- If cache hit - elasticache, if cache miss - RDS, and then write to cache
+
+- User session store
+-- User logs into app. 
+-- Write session data to elasticache
+-- User hits other instance
+--- Needs to retrieve session.
+
+- Redis
+-- In memory key-value store
+-- super low latency
+-- cache can survive reboots (persistance)
+-- Great to host user sessions, leaderboards, distributed state, relieve pressure off DBs, pub/sub capability
+-- Multi AZ
+-- Support for read replicas
+
+- Memcached
+-- In memory object store
+-- Cache does not survive reboots
+-- Redis generally preferred. 
+
+### TODO How to setup Redis
+
+### Elasticache strategies
+
+- Helpful for read-heavy apps.
+-- Social networks, games, media sharing, Q&A portals
+- Computing intensive applications.
+
+- Lazy Loading
+-- Load only when necessary
+--- If cache hit, use elasticache. If cache miss, read from RDS and THEN populate Elasticache
+- + Only requested data is cached. No unused data
+- + Node failures not fatal
+- (-) Cache miss penalty is quite big
+- (-) Data can be updated in DB and not in cache, stale data. 
+-- Can have TTL
+
+- Write Through
+-- Update cache whenever DB is updated. 
+--- Write to RDS first, then to cache. 
+- (+) Data never stale
+- (+) Now write penalty, 2 calls each time. 
+- (-) Missing data is added / updated in the DB. Mitigation is to implement Lazy Loading too.
+
+### AWS VPC
+
+- Can create a VPC in a region
+- Each VPC has subnets
+- Each subnet must be mapped to an AZ
+- Common to have a public and a private subnet.
+- Public subets usually has:
+-- Load balancers, static websites, files, public auth layers
+- Private subnets usually contain:
+-- Web app servers
+-- Databases etc
+- Public anc private can communicate in the same VPC
+- All new accounts have a default VPC
+- Can use a VPN to connect to the VPC
+- VPC flow logs allow you to monitor the traffic within, and out of your VPC
+- VPC are per region. 
+- Subnets are VPC per AZ
+- Some AWS resources can be deployed in VPC while others can't
+- Can peer VPC within or across accounts to make it look like they're the same network. 
+
+## 3 Tier Architecture
+
+- Route 53 maps URL to load balancer using an alias record. 
+- Load balancer forwards onto apps within an autoscaling group in multiple AZ.
+-- Load balancer is in the public subnet
+- Each app can make request to elasticache (redis), or to RDS. Where RDs can have slave replication.
+- End user only accepts the load balancer. 
