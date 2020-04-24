@@ -1,27 +1,26 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
 )
 
+type Env struct {
+	db Datastore
+}
+
 func main() {
+	fmt.Println("TODO App")
 
-	//dbSetup()
-
-	var err error
-	DBCon, err = sql.Open(
-		"mysql",
-		"root:root@tcp(127.0.0.1:3306)/todo")
+	cfg := getConfig()
+	db, err := NewDB(cfg["dataSourceUrn"])
 	if err != nil {
 		panic(err)
 	}
-	//err = queryManyTest(err, DBCon)
 
-	fmt.Println("Demo Chat Application")
-	router := NewRouter()
+	env := &Env{db}
+	router := NewRouter(env)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
