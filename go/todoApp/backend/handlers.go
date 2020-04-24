@@ -18,23 +18,6 @@ func Index() http.HandlerFunc {
 	}
 }
 
-func TestIndex(env *Env) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			http.Error(w, http.StatusText(405), 405)
-			return
-		}
-		todos, err := env.db.FindTodos()
-		if err != nil {
-			http.Error(w, http.StatusText(500), 500)
-			return
-		}
-		for _, td := range todos {
-			fmt.Fprintf(w, "TODO %v", td)
-		}
-	})
-}
-
 func TodoIndex(env *Env) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		todos, err := env.db.FindTodos()
