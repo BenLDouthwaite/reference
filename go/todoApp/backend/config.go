@@ -8,6 +8,7 @@ import (
 func getConfig() map[string]string {
 	cfg := map[string]string{}
 	cfg["dataSourceUrn"] = getDataSourceUrn()
+	cfg["allowOrigin"] = os.Getenv("ALLOW_ORIGIN")
 	return cfg
 }
 

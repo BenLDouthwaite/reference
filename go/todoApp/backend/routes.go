@@ -45,6 +45,24 @@ func getRoutes(env *Env) Routes {
 			Pattern: "/todo/{todoId}",
 			Handler: TodoDelete(env),
 		},
+
+		//Route{
+		//	"OptionsTest",
+		//	"OPTIONS",
+		//	"/todo",
+		//	corsHandle(),
+		//},
 	}
 	return routes
 }
+
+//func corsHandle() http.HandlerFunc {
+//	return func(w http.ResponseWriter, r *http.Request) {
+//		fmt.Println("preflight detected: ", r.Header)
+//		w.Header().Add("Connection", "keep-alive")
+//		w.Header().Add("Access-Control-Allow-Origin", "http://localhost:3000")
+//		w.Header().Add("Access-Control-Allow-Methods", "POST, OPTIONS, GET, DELETE, PUT")
+//		w.Header().Add("Access-Control-Allow-Headers", "content-type")
+//		w.Header().Add("Access-Control-Max-Age", "86400")
+//	}
+//}

@@ -55,7 +55,9 @@ func TodoShow(env *Env) http.Handler {
 }
 
 func TodoCreate(env *Env) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
 		var todo Todo
 		body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 		if err != nil {
@@ -65,6 +67,7 @@ func TodoCreate(env *Env) http.Handler {
 			panic(err)
 		}
 		if err := json.Unmarshal(body, &todo); err != nil {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(422) // Unprocessable entity
 			if err := json.NewEncoder(w).Encode(err); err != nil {
@@ -78,6 +81,8 @@ func TodoCreate(env *Env) http.Handler {
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		w.WriteHeader(http.StatusCreated)
 		if err := json.NewEncoder(w).Encode(t); err != nil {
 			panic(err)
@@ -99,6 +104,7 @@ func TodoDelete(env *Env) http.Handler {
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 	})
 }

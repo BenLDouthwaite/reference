@@ -21,6 +21,6 @@ func main() {
 	}
 
 	env := &Env{db}
-	router := NewRouter(env)
+	router := NewRouter(env, cfg["allowOrigin"])
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

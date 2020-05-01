@@ -7,10 +7,11 @@ import (
 	"os"
 )
 
-type myConsoleWriter struct {}
+type myConsoleWriter struct{}
 
 func main() {
 	url := "http://google.com"
+
 	response, err := http.Get(url)
 	if err != nil {
 		fmt.Print("Err1:", err)

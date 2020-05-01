@@ -108,3 +108,15 @@ What is a job?
 # Useful links
 
 Packages: https://golang.org/pkg/ 
+
+# Demo - Interesting Features :
+
+- Works easily with foreign character sets [example](./helloworld/main.go)
+- Binaries to execute [example](./gameOfLife/main.go)
+- Scatter and gather
+- Error handling
+- Composition over inheritance
+- Maintain loosely couples components -> How does inheritance work
+- Mantra of 'Do more with less'
+- Powerful standard lib. -> http server [example](./http/webServer/main.go)
+- No warnings, only errors or don't bother,

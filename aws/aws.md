@@ -589,3 +589,22 @@ BRAIN DUMP
 -- Load balancer is in the public subnet
 - Each app can make request to elasticache (redis), or to RDS. Where RDs can have slave replication.
 - End user only accepts the load balancer. 
+
+## Elastic Beanstalk
+
+- A developer centric view of deploying an app on AWS
+- Free,only pay for the underlying instances
+- Only application code is the responsibility of the dev
+- Three architecture
+-- Single instance dev : good for dev
+-- LB + ASG : Great for production and pre-production web applications
+-- ASG only : great for non-web apps
+- EBS has 3 components 
+-- Application
+-- Application Version
+-- Environment name
+- Can deploy versions, and deploy between environemnts
+- Can rollbacl to previous version.
+- Create app, create enc, upload version, release
+- Supports many platforms (inc Node, Java, Go)
+
