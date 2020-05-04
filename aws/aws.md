@@ -608,3 +608,8 @@ BRAIN DUMP
 - Create app, create enc, upload version, release
 - Supports many platforms (inc Node, Java, Go)
 
+## CloudFormation
+
+- Resources are mandatory, core of the template
+- 224 different resources, need to know how to refernce the docs to use them
+- * Key way to define infrastructure as code * 
