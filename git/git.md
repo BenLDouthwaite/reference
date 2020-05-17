@@ -77,6 +77,10 @@ Run
 
 `git config core.filemode false`
 
+### Set repo to SSH rather than HTTPS for changes
+
+` git remote set-url origin git@github.com:UserName/repo-name.git`
+
 ## Config 
 
 When setting up on a linux machine, if prompted for username on each push, add to the `.git/config`
@@ -86,3 +90,9 @@ When setting up on a linux machine, if prompted for username on each push, add t
 ## Documentation
 
 https://git-scm.com/docs
+
+## SSH Setup
+
+- SSH keygen
+-- `ssh-keygen -t rsa -b 4096 -C "email@example.com"`
+
