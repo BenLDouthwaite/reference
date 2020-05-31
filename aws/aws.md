@@ -613,3 +613,13 @@ BRAIN DUMP
 - Resources are mandatory, core of the template
 - 224 different resources, need to know how to refernce the docs to use them
 - * Key way to define infrastructure as code * 
+
+## Event Bridge
+
+- Can be used to setup cron jobs with events to trigger lambdas
+
+## Lambda
+### Triggers
+- API Gateway
+- Event Bridge
+- S3 Events

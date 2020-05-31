@@ -89,6 +89,11 @@ kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h 
 
 # Minikube
 
+## Installation
+### Mac
+
+` brew install minikube`
+
 ## Notes
 
 By defult, created with limited cpu and memory,

@@ -15,7 +15,7 @@ type MyResponse struct {
 }
 
 func HandleLambdaEvent(event MyEvent) (MyResponse, error) {
-	return MyResponse{Message: fmt.Sprintf("%s is a total of %d years old!!!!!", event.Name, event.Age)}, nil
+	return MyResponse{Message: fmt.Sprintf("%s is a total of %d years old!!!!! And they are a lovely person", event.Name, event.Age)}, nil
 }
 
 func main() {
