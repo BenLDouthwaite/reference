@@ -1,4 +1,4 @@
-# React ( & friends)
+# React
 
 Javascript library to make UIs and handle user interaction
 
