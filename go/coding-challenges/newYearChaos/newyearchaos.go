@@ -36,37 +36,37 @@ func max(x, y int) int {
 	return y
 }
 
-func minimumBribes_naiveDoubleLoop(q []int32) int {
+// func minimumBribes_naiveDoubleLoop(q []int32) int {
 
-	fmt.Printf("\n====\nInput array: %v\n", q)
+// 	fmt.Printf("\n====\nInput array: %v\n", q)
 
-	// naive double loop
-	const maxSwaps = 2
+// 	// naive double loop
+// 	const maxSwaps = 2
 
-	var count = 0
+// 	var count = 0
 
-	// naive double loop
-	var swaps = make([]int, len(q))
-	for i := 0; i < len(q)-1; i++ {
-		for j := 0; j < len(q)-i; j++ {
-			// fmt.Printf("i.%d, j.%d. q.%v\n", i, j, q)
+// 	// naive double loop
+// 	var swaps = make([]int, len(q))
+// 	for i := 0; i < len(q)-1; i++ {
+// 		for j := 0; j < len(q)-i; j++ {
+// 			// fmt.Printf("i.%d, j.%d. q.%v\n", i, j, q)
 
-			if j+1 == int(q[j]) { // Value in correct location
-				continue
-			}
+// 			if j+1 == int(q[j]) { // Value in correct location
+// 				continue
+// 			}
 
-			if q[j] > q[j+1] {
-				if swaps[q[j]-1] == maxSwaps {
-					fmt.Printf("Too chaotic\n")
-					return -1
-				}
-				swaps[q[j]-1]++ // Need -1 for 0 based array
-				count++
-				q[j], q[j+1] = q[j+1], q[j] // Swap with next
-			}
-		}
-	}
-	fmt.Printf("Final val, %v", q)
-	fmt.Println(count)
-	return count
-}
+// 			if q[j] > q[j+1] {
+// 				if swaps[q[j]-1] == maxSwaps {
+// 					fmt.Printf("Too chaotic\n")
+// 					return -1
+// 				}
+// 				swaps[q[j]-1]++ // Need -1 for 0 based array
+// 				count++
+// 				q[j], q[j+1] = q[j+1], q[j] // Swap with next
+// 			}
+// 		}
+// 	}
+// 	fmt.Printf("Final val, %v", q)
+// 	fmt.Println(count)
+// 	return count
+// }
