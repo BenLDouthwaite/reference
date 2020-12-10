@@ -1,5 +1,9 @@
 # Rust
 
+## TODO
+
+- Rest API.
+
 ## Docs 
 
 `rustup docs --book`
@@ -20,6 +24,8 @@
 * Because `if` is an expression, we can use it on the right side of a let statement, as in Listing 3-2.
 ** Must be the same return type though
 * `for element in (1..4) {...}` to iterate each
+* The ? operator can be used in functions that have a return type of `Result`, 
+    because it is defined to work in the same way as a match expression
 
 ## Naming
 
@@ -42,8 +48,31 @@
 * Shadowing is different from marking a variable as mut, because we’ll get a compile-time error if we accidentally try to reassign to this variable without using the let keyword. By using let, we can perform a few transformations on a value but have the variable be immutable after those transformations have been completed.
     * Shadowing thus spares us from having to come up with different names, such as spaces_str and spaces_num; instead, we can reuse the simpler spaces name. 
 * Rust is an expression-based language
+* Rust implements generics in such a way that your code doesn’t run any slower using generic types than it would with concrete types.
 
-## Ownership
+### Traits
+
+* Can define multiple trait bounds with '+' syntax
+    * `pub fn notify(item: &(impl Summary + Display)) {...}`
+    * `fn some_function<T, U>(t: &T, u: &U) -> i32
+        where T: Display + Clone,
+              U: Clone + Debug
+         {...}`
+         
+### Testing
+
+* To run individual tests, run `cargo test {name}` and any test matching name will be run
+* `#[ignore]` to ignore tests
+* Generally have unit tests and integration tests
+* Unit tests go in the src directory, in the file with the code they're testing
+    * Convention is to create a module called 'tests' and annotate the moduel with `cfg(test)`
+    * This prevents the code being run with `cargo build`
+* Rust allows you to test private functions (but you don't need to)
+* Integration tests are entirely external to the lib
+    * Can only call public functions
+    * In a separate 'tests' directory, next to 'src'
+    
+### Ownership
 
 * Checked at compile time, so does not slow down execution at runtime
 * Stack: LIFO, push / pop
@@ -130,10 +159,18 @@
 * Gives a name to the 'object' but not to each field
     * e.g. `struct Colour(i32, i32, i32)` for rgb. Is the default, so would be overkill to specify
     
+### Collections
+
+- Vector
+-- when we need to store elements of a different type in a vector, we can define and use an enum!
+- String
+- Hash Map
+
 # Cargo
 
 * System and package manager
 * `cargo new {name}` to create a new project
+
 * Used TOML for config
 * `cargo build` build the executable
 * Cargo.lock is generated automatically, we never need to change it
@@ -142,28 +179,10 @@
 * `cargo build --release` Build prod executable, slower to build, quicker to run
 * `cargo update` Update dependencies
 
+## Program layout:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-XMJF3MsdnaYyLgsh
+    Packages: A Cargo feature that lets you build, test, and share crates
+    Crates: A tree of modules that produces a library or executable
+    Modules and use: Let you control the organization, scope, and privacy of paths
+    Paths: A way of naming an item, such as a struct, function, or module
+    

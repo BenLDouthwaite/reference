@@ -58,6 +58,41 @@ fn main() {
         email: String::from("another@example.com"),
         ..user1
     };
+
+    collections();
+    handling_errors();
+    create_generics();
+    traits_demo();
+}
+
+fn collections() {
+    let v: Vec<i32> = Vec::new(); // Explicit type
+
+    let v2 = vec![1,2,3]; // Implicit type
+
+    let mut v3 = Vec::new();
+    v3.push(5);
+    v3.push(6); // Rust infers the dat type
+    v3.push(89);
+    let third: &i32 = &v3[2];
+    println!("The third element is {}", third);
+
+    match v3.get(2) {
+        Some(third) => println!("The third element is {}", third),
+        None => println!("There is no third element."),
+    }
+
+    // Immutable references to each element
+    let v = vec![100, 32, 57];
+    for i in &v {
+        println!("{}", i);
+    }
+
+    // Mutable references to each element
+    let mut v = vec![100, 32, 57];
+    for i in &mut v {
+        *i += 50;
+    }
 }
 
 fn build_user(email: String, username: String) -> User {
@@ -116,4 +151,93 @@ fn func_with_params(x: i32, y: i32) {
 fn func_with_return_value() -> i32 {
     let x = 3 + 1;
     x + 1
+}
+
+fn handling_errors() {
+    // panic!("oh no"); // Comment to not stop whole flow
+}
+
+// generics!
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+    let mut largest = list[0];
+
+    for &item in list {
+        if item > largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn create_generics() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}
+
+// Traits
+pub trait Summary {
+    fn summarize(&self) -> String;
+
+    // Default
+    // fn summarize(&self) -> String {
+    //     String::from("(Read more...)")
+    // }
+}
+
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+
+pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+fn traits_demo() {
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+
+    notify(&tweet)
 }
