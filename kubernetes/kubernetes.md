@@ -1,8 +1,12 @@
-# Kubernetes
+# Kubernetes (k8s)
 
 ## Overview
 
-Clusters:
+## Minikube [here](minikube.md)
+## Helm [here](helm.md)
+
+### Clusters:
+
 * Allow several computers to work as a single unit
 * K8s automates management of containers
 * 2 types of resources, 
@@ -10,13 +14,59 @@ Clusters:
 ** Nodes to run apps. VMs or PCs as a worker
 *** Nodes communicate with the master using the Kubernetes API
 
-* A pod is a group of one or more containers, tied together for the purposes of amin and networking
-* A pod can have only one container.
+### Pods
+
+* The basic unit for running containers inside k8s.
+* Pods provide ways to set env vars, mount storage and feed info into a container
+* Every pod holds at least 1 container, and controls their execution
+    * When containers exit, the pod dies too
+
+*Old*
 * A deployment checks the health of a pod, and restarts it is it terminates
 * deployments are the recommended was to manage the creation and scaling of pods
 
 * by default, pods are only accessible to the internal IP address in the kuebrnetes cluster
 * must expose the pod as a service to be seen from external IP
+
+### ReplicaSets
+
+* ReplicaSets are a low level type in k8s
+* Users often choose higher level abstractions
+* ReplicaSets ensure a set of identical pods will run at a configured replica count
+    * If one pod dies, another will be created
+    
+### Secrets
+
+* Secrets can be attached as files or env vars
+* Base 64 encoded at rest, decoded when attached to a pod
+* Use to store tokens, certs, passwords
+* Can be attached at runtime, so config data is stored securely
+
+### Deployments
+
+* Controls deploying and maintaining a set of pods
+    * Uses a ReplicaSet to keep pods running
+* Support rolling updates and rollbacks.
+* Can be paused
+
+### DaemonSets
+
+* Can ensure a copy of a pod is running on every node in a cluster
+* Will scale with a cluster as it grows or shrinks
+
+### Ingresses
+
+* Route traffic to and from a cluster
+* Provide SSL endpoint for multiple apps.
+
+### CronJobs
+
+* Provide scheduling the execution of pods
+    * Excellent for backups, reports and automated tests
+    
+### CustomResourceDefinition (CRD)
+
+* Can create custom resource types.
 
 ## Install Kubectl
 
@@ -81,77 +131,8 @@ To view the logs from a running container, run:
 
 ## Mysql setup
 
-To setup a client for testing the local mysql imaget
+To setup a client for testing the local mysql image
 
 ```
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 ```
-
-# Minikube
-
-## Installation
-### Mac
-
-` brew install minikube`
-
-## Notes
-
-By defult, created with limited cpu and memory,
-must stop and delete minikube before recreating with more cpu and mem
-e.g. `minikube stop && minikube delete && minikube start --cpus 4 --memory 8192`
-
-## Commands
-
-`minikube start`
-Configures kubectl to use minikube and start a cluster
-
-`minikube version`
-Check version. shockingly.
-
-`minikube dashboard`
-View a GUI dashboard in browser
-
-# Example deployment
-
-( Note point to your minikube docker when local )
-`eval $(minikube docker-env)`
-
-* Build the docker image (in correct dir)
-`docker build -t docker-image-name .`
-
-`kubectl create deployment my-dep-name --image=docker-image-name`
-
-* Check deployment
-`kubectl get deployments`
-`kubectl get pods` -> Check no issues
-
-* Expose deployment
-`kubectl expose deployment my-dep-name --type=LoadBalancer --port=8080`
-
-* Check service
-`kubectl get services`
-
-* Run the service on minikube
-`minikube service my-dep-name`
-
-`kubectl get deployments -o wide`
-Allows us to see the image version
-
-`kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:v0.0.4`
-
-Probably not the best steps for updating the image but they work...
-```
-docker build -t benldouthwaite/personal-website:latest .
-docker push benldouthwaite/personal-website:latest
-kubectl set image deployment personal-website personal-website=benldouthwaite/personal-website:latest
-```
-
-TODO Look up imagePullPolicy. Would be cool to get this setup
-
-## Mamaging your cluster
-
-Minikube is configured to persist files stored under the following host directories:
-
-/data
-/var/lib/minikube
-/var/lib/docker
