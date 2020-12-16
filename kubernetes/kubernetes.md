@@ -5,7 +5,7 @@
 ## Minikube [here](minikube.md)
 ## Helm [here](helm.md)
 
-### Clusters:
+### Clusters
 
 * Allow several computers to work as a single unit
 * K8s automates management of containers
@@ -68,11 +68,17 @@
 
 * Can create custom resource types.
 
+### StatefulSet
+
+* Set of pods with an attached volume, that will retain their state after restarts, e.g a persistent cache
+
 ## Install Kubectl
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux
 
 ## Commands
+
+* Will usually alias `k` = `kubectl`
 
 `kubectl cluster-info`
 Check cluster info that things are running
@@ -89,7 +95,6 @@ Can be used to create a deployment that manages a pod, the pod runs a container 
 example:
 `kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node`
 
-
 `kubectl get deployments`
 View the deployments
 
@@ -100,6 +105,10 @@ View the pods
 
 `kubectl config view`
 View the config... really hope I can clear these soon.
+
+`kubectl port-forward {pod-name} 7000:6379`
+The above would forward requests to localhost:7000 to port 6379 on the given pod
+Generally should only be used for dev purposes.
 
 `kubectl expose`
 Expose a pod to public internet
@@ -136,3 +145,9 @@ To setup a client for testing the local mysql image
 ```
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 ```
+
+## Misc
+
+- zsh has a plugin to make working with kubectl much easier to enable find the 'plugins' config in `~/.zshrc` and set:
+`plugins (... kubectl)`
+Where '...' is any existing plugins (likely `git`)
