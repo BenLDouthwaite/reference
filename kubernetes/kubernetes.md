@@ -151,3 +151,6 @@ kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h 
 - zsh has a plugin to make working with kubectl much easier to enable find the 'plugins' config in `~/.zshrc` and set:
 `plugins (... kubectl)`
 Where '...' is any existing plugins (likely `git`)
+
+### Common commands at work : To be sorted and written up formally
+

@@ -24,6 +24,11 @@ to set a background image: `feh --bg-scale /path`
 * See [Kubernetes](../kubernetes/kubernetes.md#commands)
 * Official Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
+### openvpn3 - Open VPN
+
+`openvpn3 session-start --config ${CONFIG_FILE}`
+- Username does not include email domain.
+
 ### watch
 
 Repeat the given command and pipe the output to the screen:
