@@ -29,6 +29,13 @@ to set a background image: `feh --bg-scale /path`
 `openvpn3 session-start --config ${CONFIG_FILE}`
 - Username does not include email domain.
 
+### rsync - Remote file copying tool
+
+- Only transfer files that have changed.
+
+`rsync -t *.c foo:src/`
+- Copy all `.c` files in the current dir to the `src` folder on machine `foo`
+
 ### watch
 
 Repeat the given command and pipe the output to the screen:
