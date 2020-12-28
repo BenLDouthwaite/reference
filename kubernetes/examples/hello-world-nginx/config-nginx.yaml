@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-service-nginx
+data:
+  nginx.conf: |
+    events {} # event context have to be defined to consider config valid
+
+    http {
+      server {
+        listen 80;
+        server_name localhost;
+        return 200 "Hello World";
+      }
+    }

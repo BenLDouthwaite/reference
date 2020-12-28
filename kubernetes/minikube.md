@@ -21,6 +21,8 @@ Check version. shockingly.
 
 `minikube dashboard`
 View a GUI dashboard in browser
+`minikube dashboard --url`
+To just print the url without opening in browser
 
 # Example deployment
 
