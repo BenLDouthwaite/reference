@@ -36,6 +36,15 @@ to set a background image: `feh --bg-scale /path`
 `rsync -t *.c foo:src/`
 - Copy all `.c` files in the current dir to the `src` folder on machine `foo`
 
+- Be careful of syntax with trailing slashes or not
+    - With a trailing slash on a dir = the contents of the dir
+    - Without a trailing slash on a dir = the dir itself to be moved 
+
+### touch 
+
+Create a new file
+`touch myFile.txt`
+
 ### watch
 
 Repeat the given command and pipe the output to the screen:

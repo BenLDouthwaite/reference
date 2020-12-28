@@ -1,5 +1,9 @@
 # Kubernetes (k8s)
 
+Contents:
+- [Overview](#Overview)
+- [Commands](#Commands)
+
 ## Overview
 
 ## Minikube [here](minikube.md)
@@ -107,6 +111,7 @@ View the pods
 View the config... really hope I can clear these soon.
 
 `kubectl port-forward {pod-name} 7000:6379`
+`kubectl port-forward {pod-name} 7000:6379`
 The above would forward requests to localhost:7000 to port 6379 on the given pod
 Generally should only be used for dev purposes.
 
@@ -151,6 +156,3 @@ kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h 
 - zsh has a plugin to make working with kubectl much easier to enable find the 'plugins' config in `~/.zshrc` and set:
 `plugins (... kubectl)`
 Where '...' is any existing plugins (likely `git`)
-
-### Common commands at work : To be sorted and written up formally
-
