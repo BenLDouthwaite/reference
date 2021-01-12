@@ -4,6 +4,6 @@ reference.iml
 .vscode
 **/target
 **.iml
-go/bin/**
-go/pkg/**
-go/src/**
+languages/go/bin/**
+languages/go/pkg/**
+languages/go/src/**

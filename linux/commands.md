@@ -8,6 +8,14 @@ Link out to individual files where extra detail needed
 How to make `zsh` the default shell?
 `chsh -s $(which zsh)`
 
+### Curl
+
+Tracking the time a request takes
+`curl -o /dev/null -s -w 'Total: %{time_total}\n'  https://www.google.com`
+
+Including Http status codes: -i
+`curl -i http://google.com`
+
 ### df - File system disk usage
 
 ### feh
@@ -17,11 +25,16 @@ to set a background image: `feh --bg-scale /path`
 
 ### gcloud - Google Cloud Platform CLI
 
+### Grep
 
+How to filter to anything _not_ containing 'xyz'
+
+Finding multiple strings on the same line:
+- Chain grep: `cat my_file.txt`
 
 ### kubectl - Kubernetes 
 
-* See [Kubernetes](../kubernetes/kubernetes.md#commands)
+* See [Kubernetes](../tools/kubernetes/kubernetes.md#commands)
 * Official Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 
 ### openvpn3 - Open VPN

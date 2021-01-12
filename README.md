@@ -6,8 +6,8 @@ Used as a learning tool for myself, not guaranteed to be up to date or quality.
 
 # Languages
 
-- [Go](./go/go.md)
-- [Rust](./rust/rust.md)
+- [Go](languages/go/go.md)
+- [Rust](languages/rust/rust.md)
 
 # Tools / Systems
 
