@@ -3,6 +3,20 @@
 Info on common linux commands, and questions I end up googling repeatedly
 Link out to individual files where extra detail needed
 
+### chmod - Change 'mode of access' (permissions)
+
+In absolute mode, permissions represented in octal as a bitmap
+
+    0 = ---
+    4 = r-- (Read only)
+    5 = r-x (Read and execute a file, but not change it)
+    7 = rwx (Full access)
+    
+### chown - Change ownership
+
+`chown user-name file-name`
+`chown user-name:group-name file-name`
+    
 ### chsh - Change Login Shell
 
 How to make `zsh` the default shell?
@@ -52,6 +66,10 @@ Finding multiple strings on the same line:
 - Be careful of syntax with trailing slashes or not
     - With a trailing slash on a dir = the contents of the dir
     - Without a trailing slash on a dir = the dir itself to be moved 
+
+### stat - File attributes
+
+`stat file-name`
 
 ### touch 
 
