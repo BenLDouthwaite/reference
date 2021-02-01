@@ -24,6 +24,9 @@ use `host.docker.internal` on docker for windows version 18.01 +
 
 https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
 
+If the above fails on linux, you can use `172.17.0.1` TODO Investigate _why_ this works. Saving here for now
+https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal
+
 ## Delete all images
 
 `docker rmi $(docker images -a -q)`
