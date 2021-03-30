@@ -65,6 +65,11 @@ git commit --amend --author="FIRSTNAME LASTNAME <email@address.com>"
 
 `git commit --amend` and edit in vi based interface
 
+### Remove all the changes of the last commit, without deleting it
+
+`git revert HEAD~1`
+`git revert -m 1 HEAD~1` if the last commit was a merge commit
+
 ### Changing the file mode to avoid conflicts between operating systems
 
 To ignore file mode changes e.g
