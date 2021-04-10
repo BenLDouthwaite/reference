@@ -12,4 +12,4 @@
 ## Cronjobs
 
 If you have a scheduled cronjob, but want to trigger it manually
-`kubectl create job --from=cronjob/{name} {jon-name}`
+`kubectl create job --from=cronjob/{name} {job-name}`
