@@ -13,3 +13,6 @@
 
 If you have a scheduled cronjob, but want to trigger it manually
 `kubectl create job --from=cronjob/{name} {job-name}`
+
+To patch a scheduled cronjob and suspend it:
+`kubectl patch cronjobs {cronjob-name} -p '{"spec" : {"suspend" : true }}'` 
