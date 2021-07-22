@@ -2,6 +2,13 @@
 
 Uses a `package.json` file to manage dependencies.
 
+## NVM Manage node versions
+
+* Install NVM
+* `nvm ls`
+* `nvm ls-remote`
+* `nvm install v14.16.1` // or your chosen version.
+
 ## What is the difference between `dependencies` and `devDependencies`?
 
 Running `npm install --save {dep name}` will add a dependency to the `package.json`

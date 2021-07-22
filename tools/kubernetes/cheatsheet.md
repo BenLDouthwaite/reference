@@ -12,4 +12,14 @@
 ## Cronjobs
 
 If you have a scheduled cronjob, but want to trigger it manually
-`kubectl create job --from=cronjob/{name} {job-name}`
+`kubectl create job --from=cronjob/{name} {job-name}
+
+## Sorting by age
+
+`kubectl get jobs --sort-by=.metadata.creationTimestamp` old to new
+`kubectl get jobs --sort-by=.metadata.creationTimestamp | tac` new to old
+
+## Getting failed jobs 
+
+`kubectl get jobs | grep "0/1"`
+TODO Is there a more generic way of doing the above?
