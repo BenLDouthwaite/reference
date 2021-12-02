@@ -24,7 +24,8 @@ public class MakingAnagrams {
         Set<Character> charsUnion = new HashSet<>(aCharCount.keySet());
         charsUnion.addAll(bCharCount.keySet());
 
-        bCharCount.finalize()
+        // Commented after function hidden in newer version of Java
+//        bCharCount.finalize();
 
         int charaRemovalCount = 0;
         for(Character c: charsUnion) {
