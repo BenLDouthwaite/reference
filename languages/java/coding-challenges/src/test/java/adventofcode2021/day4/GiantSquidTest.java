@@ -34,10 +34,10 @@ public class GiantSquidTest {
         );
 
         // when
-        int result = GiantSquid.bingo(input);
+        int result = GiantSquid.bingoLast(input);
 
         // then
-        assertThat(result).isEqualTo(4512);
+        assertThat(result).isEqualTo(1924);
     }
 
     @Test

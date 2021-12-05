@@ -3,7 +3,7 @@ package adventofcode2021.day4;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,15 +15,52 @@ public class GiantSquid {
         Path puzzleInputPath = Path.of("./src/main/java/adventofcode2021/day4/puzzleInput.txt");
         List<String> input = Files.readAllLines(puzzleInputPath);
 
-        int result1 = bingo(input);
-        System.out.println("Part 1: Result for puzzle input: " + result1);
+        // TODO Fix checkWinners function to make part 1 pass test
+//        int result1 = bingo(input);
+//        System.out.println("Part 1: Result for puzzle input: " + result1);
 
-//        int result2 = binaryDiagnosticLifeSupport(input);
-//        System.out.println("Part 2: Result for puzzle input: " + result2);
+        int result2 = bingoLast(input);
+        System.out.println("Part 2: Result for puzzle input: " + result2);
     }
 
     public static int bingoLast(List<String> input) {
-        return 0;
+        List<Integer> numberDraw = Stream.of(input.get(0)
+                        .split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        int bingoBoardsCount = (input.size() -1) / 6;
+        int[][][] boards = parseBingoBoards(input, bingoBoardsCount);
+
+        int finalDrawnNumber = -1;
+
+        List<Integer> winners = new ArrayList<>();
+
+        for (Integer drawnNumber: numberDraw) {
+            markDrawnNumber(boards, drawnNumber);
+
+            Optional<List<Integer>> newWinners = checkWinners(boards, winners);
+
+            if (newWinners.isPresent()) {
+                List<Integer> newWinnersValues = newWinners.get();
+                winners.addAll(newWinnersValues);
+
+                if (winners.size() == bingoBoardsCount) {
+                    finalDrawnNumber = drawnNumber;
+                    break;
+                }
+            }
+
+//            printBoards(boards); // Available to debug if needed.
+        }
+
+        if (winners.size() == bingoBoardsCount) {
+            int lastWinnerIndex = winners.get(winners.size() - 1);
+            int[][] winningBoard = boards[lastWinnerIndex];
+            return calculateAnswer(winningBoard, finalDrawnNumber);
+        } else {
+            throw new IllegalStateException("Game must have a winner. Logic error");
+        }
     }
 
     public static int bingo(List<String> input) {
@@ -41,10 +78,11 @@ public class GiantSquid {
         for (Integer drawnNumber: numberDraw) {
             markDrawnNumber(boards, drawnNumber);
 
-            Optional<Integer> winner = checkWinner(boards);
+            // TODO Get this to work again, somehow. Probably have two methods.
+            Optional<List<Integer>> winner = checkWinners(boards, new ArrayList<>());
 
             if (winner.isPresent()) {
-                winningBoardIndex = winner.get();
+//                winningBoardIndex = winner.get();
                 finalDrawnNumber = drawnNumber;
                 break;
             }
@@ -60,36 +98,58 @@ public class GiantSquid {
         }
     }
 
-    private static Optional<Integer> checkWinner(int[][][] boards) {
-        for (int i = 0; i < boards.length; i++) {
-            int [][] board = boards[i];
-            row:
-            for (int j = 0; j < 5; j++) {
-                int [] row = board[j];
-                for (int k = 0; k < 5; k++) {
-                    if (row[k] > 0) {
-                        continue row; // found an unmarked value, row is not a winner
-                    }
-                }
-                return Optional.of(i); // Index of winning board
-            }
-        }
-
-        // TODO Check Column winners too.
-            // Apparently not needed for part 1!
-
-        return Optional.empty();
-    }
-
     private static void markDrawnNumber(int[][][] boards, Integer drawnNumber) {
         for (int i = 0; i < boards.length; i++) {
             for (int j = 0; j < 5; j++) {
                 for (int k = 0; k < 5; k++) {
                     if (boards[i][j][k] == drawnNumber) {
-                        boards[i][j][k] *= -1; // Store as negative, to flag as 'ticked'
+                        boards[i][j][k] = (boards[i][j][k] * -1) - 1; // Store as negative, to flag as 'ticked'. Subtract 1 is to handle 0 case.
                     }
                 }
             }
+        }
+    }
+
+    private static Optional<List<Integer>> checkWinners(int[][][] boards, List<Integer> winners) {
+
+        List<Integer> newWinners = new ArrayList<>();
+        board:
+        for (int i = 0; i < boards.length; i++) {
+
+            if (winners.contains(i)) {
+                continue; // Board is already a winner, don't need to check again
+            }
+
+            int [][] board = boards[i];
+
+            row:
+            for (int j = 0; j < 5; j++) {
+                int [] row = board[j];
+                for (int k = 0; k < 5; k++) {
+                    if (row[k] >= 0) {
+                        continue row; // found an unmarked value, row is not a winner
+                    }
+                }
+                newWinners.add(i);
+                continue board; // No need to check column too.
+            }
+
+            column:
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+                    if (board[k][j] >= 0) {
+                        continue column; // found an unmarked value, column is not a winner
+                    }
+                }
+                newWinners.add(i);
+            }
+
+        }
+
+        if (newWinners.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(newWinners);
         }
     }
 
