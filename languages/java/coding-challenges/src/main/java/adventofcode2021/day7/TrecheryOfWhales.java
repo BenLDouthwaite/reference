@@ -58,11 +58,7 @@ public class TrecheryOfWhales {
         for (Map.Entry<Integer, Long> startingLocationCount: startingLocationCountMap.entrySet()) {
             int startLoc = startingLocationCount.getKey();
             long locCount = startingLocationCount.getValue();
-
             int diff = Math.abs(startLoc - desiredPosition);
-            if (diff == 0) {
-                continue;
-            }
             if (badFuel) { // pt2
                 int tnDiff = (diff * (diff + 1)) / 2;
                 totalFuel += (tnDiff * locCount);
