@@ -1,5 +1,11 @@
 # Docker
 
+## Testing installation
+
+`docker run hello-world` test image, to check installation
+
+setup a docker unix group, to run commands as non-root user.
+
 ## Commands
 
 * `build`
