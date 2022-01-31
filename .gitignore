@@ -7,3 +7,15 @@ reference.iml
 languages/go/bin/**
 languages/go/pkg/**
 languages/go/src/**
+
+# Language Specific 
+
+## Python 
+
+__pycache__/
+
+# Tool Specific
+
+## Vim 
+
+*.swp
