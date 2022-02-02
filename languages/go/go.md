@@ -69,12 +69,20 @@ Go routine with function literal and sleep
 
 * Array: Fixed length list of things
     * Rarely used in go, seen as primitive
+
 * Slice: Array that can grow or shrink
+    * "A slice is not an array, a slice describes a piece of an array"
+	* However, a slice is a value, not a pointer to a struct
+    * The contents of a slice argument can be modified by a function byt its header cannot
     * Every record in a slice must be of the same type  
     * Define slice: `mySlice := []string{"Hi", "World"}`
     * Add element: `mySlice = append(mySlice, "Test")`
     * Subslices: `mySlice[startIndex:upToNotIncludingIndex]`
-        * Excluding either index implies the start or end of the slice      
+        * Excluding either index implies the start or end of the slice
+    * Multiple slices can be pointing to the same underlying array      
+* String:
+    * Strings are just read-only slices of bytes
+
 * Type: we can extend base types to add extra functionality
     `type myStrings []string`
     And add functions with 'myStrings' as a receiver
