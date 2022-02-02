@@ -21,3 +21,5 @@
 	- within `test` create `test_<file_name>.py` test files
 	- within `test` create `__init__.py`, to allow importing packages
 	- _see ctci/arrays.py for a simple example
+
+- Will typically want to always be running tests from the 'root' of your directory. Not 'source' or the test directory itself'

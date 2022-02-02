@@ -1,4 +1,19 @@
-# GO 
+# GO
+
+## TODO
+
+- Review module setup 
+
+## Installation
+
+- https://go.dev/doc/install
+
+### Ubuntu
+
+- As always, have done this several times now.
+- Download from `https://go.dev/dl/`
+- Extract to `/usr/local`
+- Update shell to source `export PATH=$PATH:/usr/local/go/bin`  
 
 ## Language features
 
@@ -90,6 +105,13 @@ When using the package 'main', we generate an executable package.
 We must also create a 'main' function inside the main package
 
 Files in the same package can freely call functions defined in other files.
+
+## Modules
+
+- TODO Need to follow some tutorials on this, gets confusing
+- `go mod tidy` finds and adds dependencies
+- We can edit `go.mod` to look for local modules during dev
+	- go mod edit -replace example.com/greetings=../greetings
 
 ## Naming Conventions
 
