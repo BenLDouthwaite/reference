@@ -13,3 +13,7 @@ Configuration is YAML
 
 default yaml config available in `./prometheus.yml`
 example custom yaml config available in `./my-service.yml`
+
+## How to run locally
+
+
