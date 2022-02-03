@@ -82,6 +82,7 @@ Go routine with function literal and sleep
     * Multiple slices can be pointing to the same underlying array      
 * String:
     * Strings are just read-only slices of bytes
+    * Strings hold arbitrary bytes, not unicode or UTF-8 or anything else. Just bytes
 
 * Type: we can extend base types to add extra functionality
     `type myStrings []string`
