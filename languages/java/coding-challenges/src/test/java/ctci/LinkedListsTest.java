@@ -11,7 +11,7 @@ public class LinkedListsTest {
     @Test
     public void removeDuplicates() {
         // given
-        Node root = new Node(1);
+        ListNode root = new ListNode(1);
         root.appendToTail(2, 10, 20, 1, 2, 1, 2, 3);
 
         // when
@@ -25,7 +25,7 @@ public class LinkedListsTest {
     @Test
     public void removeDuplicates_allDuplicates() {
         // given
-        Node root = new Node(1);
+        ListNode root = new ListNode(1);
         root.appendToTail(1,1,1,1,1,1);
 
         // when
@@ -39,7 +39,7 @@ public class LinkedListsTest {
     @Test
     public void removeDuplicatesNoBuffer_allDuplicates() {
         // given
-        Node root = new Node(1);
+        ListNode root = new ListNode(1);
         root.appendToTail(2, 10, 20, 1, 1, 1, 1, 1, 2, 1, 2, 3);
 
         // when

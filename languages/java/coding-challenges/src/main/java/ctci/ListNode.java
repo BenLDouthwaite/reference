@@ -1,19 +1,18 @@
 package ctci;
 
 import java.util.Arrays;
-import java.util.List;
 
-class Node {
-    Node next = null;
+class ListNode {
+    ListNode next = null;
     int data;
 
-    public Node(int data) {
+    public ListNode(int data) {
         this.data = data;
     }
 
     void appendToTail(int d) {
-        Node end = new Node(d);
-        Node n = this;
+        ListNode end = new ListNode(d);
+        ListNode n = this;
         while (n.next != null) {
             n = n.next;
         }

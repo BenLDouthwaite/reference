@@ -5,9 +5,9 @@ import java.util.*;
 public class LinkedLists {
 
     // Primarily to simplify tests.
-    protected static List<Integer> getAllValues(Node root) {
+    protected static List<Integer> getAllValues(ListNode root) {
         List<Integer> values = new ArrayList<>();
-        Node n = root;
+        ListNode n = root;
         while (n != null) {
             values.add(n.data);
             n = n.next;
@@ -16,7 +16,7 @@ public class LinkedLists {
     }
 
     // 2.1 Remove Dups
-    public static void removeDuplicates(Node root) {
+    public static void removeDuplicates(ListNode root) {
 
         if (root == null) {
             return;
@@ -24,7 +24,7 @@ public class LinkedLists {
 
         Set<Integer> values = new HashSet<>();
 
-        Node n = root;
+        ListNode n = root;
         values.add(n.data);
 
         while (n.next != null) {
@@ -41,14 +41,14 @@ public class LinkedLists {
 
     // 2.1 Remove Dups - No buffer allowed
     // Duplicates get removed from the front.
-    public static void removeDuplicatesNoBuffer(Node root) {
+    public static void removeDuplicatesNoBuffer(ListNode root) {
 
         if (root == null) {
             return;
         }
 
-        Node current = root;
-        Node runner;
+        ListNode current = root;
+        ListNode runner;
 
         while (current.next != null) {
 
