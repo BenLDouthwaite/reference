@@ -15,10 +15,10 @@ public class LinkedListsTest {
         root.appendToTail(2, 10, 20, 1, 2, 1, 2, 3);
 
         // when
-        Node result = LinkedLists.removeDuplicates(root);
+        LinkedLists.removeDuplicates(root);
 
         // then
-        List<Integer> dataList = LinkedLists.getAllValues(result);
+        List<Integer> dataList = LinkedLists.getAllValues(root);
         assertThat(dataList).isEqualTo(List.of(1, 2, 10, 20, 3));
     }
 
@@ -29,10 +29,10 @@ public class LinkedListsTest {
         root.appendToTail(1,1,1,1,1,1);
 
         // when
-        Node result = LinkedLists.removeDuplicates(root);
+        LinkedLists.removeDuplicates(root);
 
         // then
-        List<Integer> dataList = LinkedLists.getAllValues(result);
+        List<Integer> dataList = LinkedLists.getAllValues(root);
         assertThat(dataList).isEqualTo(List.of(1));
     }
 
@@ -40,13 +40,13 @@ public class LinkedListsTest {
     public void removeDuplicatesNoBuffer_allDuplicates() {
         // given
         Node root = new Node(1);
-        root.appendToTail(2, 10, 20, 1, 2, 1, 2, 3);
+        root.appendToTail(2, 10, 20, 1, 1, 1, 1, 1, 2, 1, 2, 3);
 
         // when
-        Node result = LinkedLists.removeDuplicatesNoBuffer(root);
+        LinkedLists.removeDuplicatesNoBuffer(root);
 
         // then
-        List<Integer> dataList = LinkedLists.getAllValues(result);
-        assertThat(dataList).isEqualTo(List.of(10, 20, 1, 2, 3));
+        List<Integer> dataList = LinkedLists.getAllValues(root);
+        assertThat(dataList).isEqualTo(List.of(1, 2, 10, 20, 3));
     }
 }

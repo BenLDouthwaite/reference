@@ -16,64 +16,53 @@ public class LinkedLists {
     }
 
     // 2.1 Remove Dups
-    public static Node removeDuplicates(Node root) {
+    public static void removeDuplicates(Node root) {
 
         if (root == null) {
-            return root;
+            return;
         }
 
-        Map<Integer, Boolean> valPresent = new HashMap<>();
+        Set<Integer> values = new HashSet<>();
 
         Node n = root;
-        valPresent.put(n.data, true);
+        values.add(n.data);
 
         while (n.next != null) {
-            if (valPresent.getOrDefault(n.next.data, false)) {
+            if (values.contains(n.next.data)) {
                 // Skip next to next next... will want to loop through again if many duplicates after a valid node.
                 n.next = n.next.next;
             } else {
                 // Mark that it's been seen, and we can start checking the next node
-                valPresent.put(n.next.data, true);
+                values.add(n.next.data);
                 n = n.next;
             }
         }
-
-        return root;
     }
 
     // 2.1 Remove Dups - No buffer allowed
     // Duplicates get removed from the front.
-    public static Node removeDuplicatesNoBuffer(Node root) {
+    public static void removeDuplicatesNoBuffer(Node root) {
 
         if (root == null) {
-            return root;
+            return;
         }
 
-        Node n1 = root;
-        Node n2;
+        Node current = root;
+        Node runner;
 
-        while (n1.next != null) {
+        while (current.next != null) {
 
-            n2 = n1.next;
+            runner = current.next;
 
-            boolean skipped = false;
-            while (n2.next != null) {
-                if (n2.data == n1.data) {
-                    // In effect, removing the node being compared in place
-                    n1.data = n1.next.data;
-                    n1.next = n1.next.next;
-                    skipped = true;
-                    break;
+            while (runner.next != null) {
+                if (runner.next.data != current.data) {
+                    runner = runner.next;
+                } else {
+                    runner.next = runner.next.next;
                 }
-                n2 = n2.next;
-            }
-            if (skipped) {
-                continue;
             }
 
-            n1 = n1.next;
+            current = current.next;
         }
-
-        return root;
     }
 }
