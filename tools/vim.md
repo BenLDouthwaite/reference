@@ -16,6 +16,8 @@
 - `gg=G` to reformat the entire file
 - `<c-r>=` to access expression register inputs
 - In visual mode use `o` to toggle the free end
+- Replacing instances, `f{char}` ro find a character, `s{chars}` to set replacement, `;` to find next instance, `.` to repeat
+- Commenting a block of code. `<C-V>` and select block in visual block mode. `shift + I` to enter insert mode. Make the desired change, e.g. adding '//' at the start of the line. Change will be replicated 
 
 ## Nonsense notes for practicing commands:
 
