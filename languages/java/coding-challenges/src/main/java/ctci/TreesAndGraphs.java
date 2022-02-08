@@ -25,7 +25,12 @@ public class TreesAndGraphs {
                 return true;
             }
             for (GraphNode adjacent : node.adjacent) {
+
                 if (!markedNodes.contains(adjacent)) {
+                    if (adjacent == target) {
+                        System.out.println("Found Target as an adjacent node from node: " + node.name + ". Path Found");
+                        return true;
+                    }
                     markedNodes.add(adjacent);
                     queue.offer(adjacent);
                 }
