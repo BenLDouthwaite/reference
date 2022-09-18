@@ -15,6 +15,8 @@ kill ${PID}
 sudo kill ${PID}
 sudo kill -9 ${PID}
 
+lsof -t -i tcp:8080 | xargs kill
+
 ## Force Quit Apps
 
 'command' + 'option' + esc

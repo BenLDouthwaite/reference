@@ -29,7 +29,6 @@ func main() {
 
   // Main Game Loop
   for {
-    // TODO Convert input to letter and digit based, and include in print
     fmt.Print("Enter selected square : ")
     // Scans a line from Stdin
 
