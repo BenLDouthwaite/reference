@@ -1,6 +1,6 @@
 import React from "react";
 
-import './App.css';
+import "./App.css";
 
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/seasons" element={<Seasons />} />
-      </Routes>  
+      </Routes>
     </BrowserRouter>
   );
 }
