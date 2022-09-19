@@ -1,6 +1,6 @@
 # React
 
-Javascript library to make UIs and handle user interaction
+JavaScript library to make UIs and handle user interaction
 
 React is split into 2 libraries:
 * React - How to use components
