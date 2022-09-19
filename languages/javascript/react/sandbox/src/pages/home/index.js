@@ -9,7 +9,10 @@ export default function Home() {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/seasons">Seasons</Link>
+          <Link to="/components">Components</Link> : Simple example of composing components. Uses Faker-js Lib.
+        </li>
+        <li>
+          <Link to="/seasons">Seasons</Link> : Demo geolocation request 
         </li>
       </ul>
     </div>

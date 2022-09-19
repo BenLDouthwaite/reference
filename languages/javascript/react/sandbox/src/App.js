@@ -7,12 +7,14 @@ import { Route, Routes } from "react-router";
 
 import Seasons from "./pages/seasons";
 import Home from "./pages/home";
+import Components from "./pages/components";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/components" element={<Components />} />
         <Route path="/seasons" element={<Seasons />} />
       </Routes>
     </BrowserRouter>
