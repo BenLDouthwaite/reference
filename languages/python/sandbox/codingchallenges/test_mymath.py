@@ -1,6 +1,6 @@
 import unittest
 
-from codingchallenges.mymath import increment
+from sandbox.codingchallenges.mymath import increment
 
 class TestMyMath(unittest.TestCase):
 
