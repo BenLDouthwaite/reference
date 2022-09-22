@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router";
 import Seasons from "./pages/seasons";
 import Home from "./pages/home";
 import Components from "./pages/components";
+import ImageSearch from "./pages/image-search";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/components" element={<Components />} />
         <Route path="/seasons" element={<Seasons />} />
+        <Route path="/image-search" element={<ImageSearch />} />
       </Routes>
     </BrowserRouter>
   );

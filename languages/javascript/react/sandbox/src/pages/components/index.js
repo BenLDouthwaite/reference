@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import CommentDetail from "./CommentDetail";
 import ApprovalCard from "./ApprovalCard";
 import { faker } from '@faker-js/faker';

@@ -14,6 +14,9 @@ export default function Home() {
         <li>
           <Link to="/seasons">Seasons</Link> : Demo geolocation request 
         </li>
+        <li>
+          <Link to="/image-search">ImageSearch</Link> : Image Search using unsplash API.
+        </li>
       </ul>
     </div>
   );
