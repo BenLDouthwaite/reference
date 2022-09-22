@@ -1,12 +1,11 @@
-import React from "react";
-import unsplash from "../api/unsplash";
+import React from "react"
+import unsplash from "./api/unsplash";
 import SearchBar from "./SearchBar";
 import ImageList from "./ImageList";
+export default class ImageSearch extends React.Component {
+    state = { images: [] };
 
-class App extends React.Component {
-  state = { images: [] };
-
-  onSearchSubmit = async (term) => {
+    onSearchSubmit = async (term) => {
     const response = await unsplash.get("/search/photos", {
       params: { query: term },
     });
@@ -23,5 +22,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;
