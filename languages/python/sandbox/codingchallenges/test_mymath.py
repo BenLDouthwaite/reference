@@ -2,20 +2,21 @@ import unittest
 
 from sandbox.codingchallenges.mymath import increment
 
+
 class TestMyMath(unittest.TestCase):
 
-	def test_increment(self):
-		input = 10
-		expectedResult = 11
+    def test_increment(self):
+        x = 10
+        expected_result = 11
 
-		result = increment(input)
+        result = increment(x)
 
-		self.assertEqual(result, expectedResult)
+        self.assertEqual(result, expected_result)
 
-	def test_increment_2(self):
-		input = 0
-		expectedResult = 1
+    def test_increment_2(self):
+        x = 0
+        expected_result = 1
 
-		result = increment(input)
+        result = increment(x)
 
-		self.assertEqual(result, expectedResult)
+        self.assertEqual(result, expected_result)

@@ -1,5 +1,6 @@
 import sys
 
+
 def is_prime(n):
     if n == 2 or n == 3: return True
     if n < 2 or n % 2 == 0: return False
@@ -14,9 +15,11 @@ def is_prime(n):
         f += 6
     return True
 
+
 def main(n):
     n = int(n)
     print(is_prime(n))
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
