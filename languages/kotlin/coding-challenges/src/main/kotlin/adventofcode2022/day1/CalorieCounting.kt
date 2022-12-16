@@ -20,7 +20,8 @@ fun calorieCountingPart2(input: String): Int {
         .sum()
 }
 
-fun calorieCountingPart2Naive(caloriesList: List<String>): Int {
+fun calorieCountingPart2Naive(input: String): Int {
+    val caloriesList = input.lines()
     val totalsList = mutableListOf<Int>()
     var total = 0;
     caloriesList.forEach {

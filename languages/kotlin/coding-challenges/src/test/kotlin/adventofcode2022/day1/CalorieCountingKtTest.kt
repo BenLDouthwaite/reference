@@ -1,5 +1,6 @@
 package adventofcode2022.day1
 
+import adventofcode2022.readText
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -11,11 +12,10 @@ class CalorieCountingKtTest {
     @Test
     fun calorieCounting_exampleInput_part1() {
         // given
-        val path = Path.of("./src/main/kotlin/adventofcode2022/day1/exampleInput.txt")
-        val caloriesList = Files.readAllLines(path)
+        val input = readText("day1", "exampleInput.txt")
 
         // when
-        val result = calorieCountingPart1(caloriesList)
+        val result = calorieCountingPart1(input)
 
         // then
         assertEquals(24000, result)
@@ -24,11 +24,22 @@ class CalorieCountingKtTest {
     @Test
     fun calorieCounting_exampleInput_part2() {
         // given
-        val path = Path.of("./src/main/kotlin/adventofcode2022/day1/exampleInput.txt")
-        val caloriesList = Files.readAllLines(path)
+        val input = readText("day1", "exampleInput.txt")
 
         // when
-        val result = calorieCountingPart2Naive(caloriesList)
+        val result = calorieCountingPart2(input)
+
+        // then
+        assertEquals(45000, result)
+    }
+
+    @Test
+    fun calorieCounting_exampleInput_part2_naive() {
+        // given
+        val input = readText("day1", "exampleInput.txt")
+
+        // when
+        val result = calorieCountingPart2Naive(input)
 
         // then
         assertEquals(45000, result)
