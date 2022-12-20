@@ -27,15 +27,10 @@ fun supplyStacksP2(input: String): String {
     val state = split[0]
 
     val crateStacks = getInitialCrateState(state)
+    
+    val commands = getCommands(split[1])
 
-    val commands = split[1].lines()
-
-    commands.forEach {
-        val cs = it.split(" ")
-        val times = cs[1].toInt()
-        val start = cs[3].toInt()
-        val end = cs[5].toInt()
-        
+    for ((times, start, end) in commands) {
         val tempStack = Stack<Char>()
         repeat(times) {
             val char = crateStacks[start - 1].pop()
@@ -46,10 +41,16 @@ fun supplyStacksP2(input: String): String {
             crateStacks[end - 1].push(char)
         }
     }
-
+    
     val result = crateStacks.map { it.pop() }.joinToString(separator = "")
 
     return result}
+
+private fun getCommands(commandsString: String): List<List<Int>> {
+    return commandsString.lines().map {
+        it.split(" ").mapNotNull { it.toIntOrNull() }
+    }
+}
 
 fun supplyStacksP1(input: String): String {
 
@@ -57,15 +58,10 @@ fun supplyStacksP1(input: String): String {
     val state = split[0]
 
     val crateStacks = getInitialCrateState(state)
+    
+    val commands = getCommands(split[1])
 
-    val commands = split[1].lines()
-
-    commands.forEach {
-        val cs = it.split(" ")
-        val times = cs[1].toInt()
-        val start = cs[3].toInt()
-        val end = cs[5].toInt()
-        
+    for ((times, start, end) in commands) {
         repeat(times) {
             val char = crateStacks[start - 1].pop()
             crateStacks[end - 1].push(char)
