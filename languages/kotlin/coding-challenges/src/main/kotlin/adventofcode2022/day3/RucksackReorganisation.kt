@@ -23,7 +23,11 @@ fun main() {
 
 fun rucksackReorganisationP2(input: String): Int {
     return input.lines().chunked(3).sumOf {
-        val group = it[0].toSet().intersect(it[1].toSet()).intersect(it[2].toSet())
+        val group = it[0].toSet()
+            .intersect(it[1].toSet())
+            .intersect(it[2].toSet())
+        check(group.size == 1)
+
         characterScore(group.first())
     }
 }
