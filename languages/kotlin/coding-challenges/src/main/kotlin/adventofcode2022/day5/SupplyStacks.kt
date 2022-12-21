@@ -4,8 +4,6 @@ import adventofcode2022.readText
 import java.util.Stack
 
 fun main() {
-    println()
-
     val exampleInput = readText("day5", "exampleInput.txt")
 
     val examplePart1Result = supplyStacksP1(exampleInput)
