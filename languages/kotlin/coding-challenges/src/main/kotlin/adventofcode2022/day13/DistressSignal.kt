@@ -8,7 +8,7 @@ private const val DAY = "day13"
 fun main() {
     check(distressSignal(readText(DAY, "exampleInput.txt")) == 13)
   
-////    // Extra test cases taken from help thread on Reddit
+    // Extra test cases taken from help thread on Reddit
     check(compareOrder(parseValues("[5, 6, 6, 7, 3]"), parseValues("[5, 6, 6, 7]")) == false)
     check(compareOrder(parseValues("[[7, 6, 5], [9, 1]]"), parseValues("[[[3, 2, [1, 0, 9, 2, 7], 4, 2], [[4, 10, 3, 4], 6, [0, 4]], [], [9, [1, 0], []]], [], [5, [4, [4, 10, 9, 6, 3], 3], [[8, 2, 8], [10, 7, 7, 1], 10, [], 5], [9], 9], [0, 7, 3, 5, 10]]")) == false)
     check(compareOrder(parseValues("[[[0, 4], [[10, 8, 6, 3], 7], 3], [], [[], [[2, 5, 3], [], [6, 7, 10, 7], 5, 7]], [5, 9, [[], [4, 3], 3, [1, 4, 3]], 3], [10, 5, 3, 5, [9, 2, [9, 9], 10, [3, 8, 9, 8, 5]]]]"), parseValues("[[[6, 2, [8, 2, 4, 6]], [9, 6, [], []], [2, [9, 7, 8], [8, 8, 5, 7], [6, 7, 0, 10]], [[0, 7]], 8], [[[6], [9], 1], [[], 5]], [[7, 0, [4, 8], 10], 5, 7, 8]]")) == true)
@@ -37,30 +37,27 @@ fun main() {
     check(distressSignalP2 == 25800)
 }
 
-// TODO - test if I flatten the lists, can I just check 1 number at a time?
-
 fun distressSignalP2(input: String): Int {
-    val rawLines = input.split("\n")
+
+    val firstDivider = "[[2]]"
+    val secondDivider = "[[6]]"
+
+    val inputStrings = input.split("\n")
         .filter { !it.isEmpty() }
         .toMutableList()
-    rawLines.add("[[2]]")
-    rawLines.add("[[6]]")
-    val sortedLines = rawLines.map {
-        parseValues(it)
-    }.sortedWith(
-        comparing<List<V>, List<V>>({ it }, { c1, c2 -> if (compareOrder(c1, c2) == true) 1 else -1 })
-    ).reversed()
 
-    val strings = sortedLines.map {
-        it.toString()
-    }
+    inputStrings.add(firstDivider)
+    inputStrings.add(secondDivider)
 
-    val index2 = strings.indexOf("[[2]]") + 1
-    val index6 = strings.indexOf("[[6]]") + 1
+    val sortedStrings = inputStrings
+        .map { parseValues(it) }
+        .sortedWith(
+            comparing<List<V>, List<V>>({ it }, { c1, c2 -> if (compareOrder(c1, c2) == true) 1 else -1 })
+        )
+        .reversed()
+        .map { it.toString() }
 
-    val decoderKey = index2 * index6
-    println("Decoder Key: $decoderKey")
-    return decoderKey
+    return (sortedStrings.indexOf(firstDivider) + 1) * (sortedStrings.indexOf(secondDivider) + 1)
 }
 
 fun distressSignal(input: String): Int {
@@ -92,12 +89,8 @@ fun compareOrder(lVals: List<V>, rVals: List<V>): Boolean? {
             println("- Right side ran out of items, so inputs are not in the right order :: NN")
             return false
         }
-        
-        val lVal = lVals[i]
-        val rVal = rVals[i]
-        println("\t- Compare $lVal vs $rVal")
 
-        val compareOrder = compareOrder(lVal, rVal)
+        val compareOrder = compareOrder(lVals[i], rVals[i])
         if (compareOrder != null) {
             return compareOrder
         }
@@ -137,9 +130,7 @@ private fun compareOrder(left: V, right: V): Boolean? {
     if (lVal != null && rVal == null) {
         println("Mixed types; convert left to [$lVal] and retry comparison")
         lList = mutableListOf(V(lVal))
-    }
-
-    if (lVal == null && rVal != null) {
+    } else if (lVal == null && rVal != null) {
         println("Mixed types; convert right to [$right] and retry comparison")
         rList = mutableListOf(V(rVal))
     }
@@ -159,61 +150,58 @@ fun parseValues(input: String): List<V> {
         return mutableListOf(V(Integer.parseInt(valuesString)))
     }
     
-    val valueStrings = mutableListOf<String>()
+    val values = mutableListOf<V>()
     
-    var indexTracker = 0
-    
-    while (indexTracker != valuesString.length) {
-        
-        val str = valuesString.substring(indexTracker)
-        if (str.first() == ',') {
-            indexTracker++
-            continue
-        }
-        if (str.first() == ' ') {
-            indexTracker++
-            continue
-        }
-        if (str.first() == '[') {
-            
-            var bracketIndex = 1
-            var bracketCount = 1;
-            while (bracketIndex < str.length) {
-                val char = str[bracketIndex]
-                if (char == '['){
-                    bracketCount++
-                }
-                if (char == ']') {
-                    bracketCount--
-                    if (bracketCount == 0) {
-                        break;
-                    }    
-                }
-                bracketIndex++
-            }
-            
-            val closingIndex = bracketIndex
+    var i = 0
+    while (i != valuesString.length) {
 
-            val listString = str.substring(0 .. closingIndex)
-            valueStrings.add(listString)
-            indexTracker += listString.length
-        } else {
-            val commaIndex = str.indexOf(',')
-            if (commaIndex == -1) {
-                valueStrings.add(str)
-                break
-            } else {
+        val str = valuesString.substring(i)
+
+        when (str.first()) {
+            ',' -> {
+                i++
+            }
+            ' ' -> {
+                i++
+            }
+            '[' -> {
+                val listString = getMatchingBracketsString(str)
+                values.add(V(vs = parseValues(listString)))
+                i += listString.length
+            }
+            else -> {
+                val commaIndex = str.indexOfFirst { it == ',' }.takeIf { it >= 0 } ?: str.length
                 val number = str.substring(0 until commaIndex)
-                valueStrings.add(number)
-                indexTracker += number.length
+                values.add(V(Integer.parseInt(number)))
+                i += number.length
             }
         }
     }
-    
-    val vals = valueStrings.map {
-        parseValue(it)
+
+    return values
+}
+
+private fun getMatchingBracketsString(str: String): String {
+    var bracketIndex = 1
+    var bracketCount = 1;
+    while (bracketIndex < str.length) {
+        val char = str[bracketIndex]
+        if (char == '[') {
+            bracketCount++
+        }
+        if (char == ']') {
+            bracketCount--
+            if (bracketCount == 0) {
+                break;
+            }
+        }
+        bracketIndex++
     }
-    return vals
+
+    val closingIndex = bracketIndex
+
+    val listString = str.substring(0..closingIndex)
+    return listString
 }
 
 fun parseValue(value: String): V {
