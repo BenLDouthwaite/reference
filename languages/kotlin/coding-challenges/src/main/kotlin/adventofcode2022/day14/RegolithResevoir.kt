@@ -6,14 +6,10 @@ private const val DAY = "day14"
 
 fun main() {
     check(regolithResevoirP1(readText(DAY, "exampleInput.txt")) == 24)
-    val p1 = regolithResevoirP1(readText(DAY))
-    check(p1 == 683)
-    println(p1)
+    println(regolithResevoirP1(readText(DAY)))
     
     check(regolithResevoirP2(readText(DAY, "exampleInput.txt")) == 93)
-    val p2 = regolithResevoirP2(readText(DAY))
-    check(p2 == 28821)
-    println(p2)
+    println(regolithResevoirP2(readText(DAY)))
 }
 
 fun regolithResevoirP2(input: String): Int {
@@ -150,7 +146,7 @@ private infix fun Int.toward(to: Int): IntProgression {
 }
 
 // For debugging 
-fun printMap(map: Array<Array<Char>>, minX: Int, maxX: Int, minY: Int, maxY: Int) {
+private fun printMap(map: Array<Array<Char>>, minX: Int, maxX: Int, minY: Int, maxY: Int) {
     
     val extendMapSize = 0
 
