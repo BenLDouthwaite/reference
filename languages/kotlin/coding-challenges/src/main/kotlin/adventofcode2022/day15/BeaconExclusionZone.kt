@@ -6,20 +6,64 @@ import kotlin.math.absoluteValue
 private const val DAY = "day15"
 
 fun main() {
-//    check(beaconExclusionZone(readText(DAY, "exampleInput.txt"), 10) == 26)
-//    println(beaconExclusionZone(readText(DAY), 2000000))
-
-    check(beaconExclusionZoneP2(readText(DAY, "exampleInput.txt"), 20) == 56000011)
-//    println(beaconExclusionZone(readText(DAY)))
+    check(beaconExclusionZone(readText(DAY, "exampleInput.txt"), 10) == 26)
+    println(beaconExclusionZone(readText(DAY), 2000000))
+    check(beaconExclusionZoneP2(readText(DAY, "exampleInput.txt"), 20) == 56000011L)
+    println(beaconExclusionZoneP2(readText(DAY), 4_000_000))
 }
 
-fun beaconExclusionZoneP2(input: String, searchSpace: Int): Int {
+fun beaconExclusionZoneP2(input: String, searchSpace: Int): Long {
+
+    val inputPositions = parseInputPositions(input)
+
+    val signalMapDistances = mutableMapOf<Pos<Int>, Int>()
     
+    inputPositions.forEach {
+        val (sensor, beacon) = it
+        val manhattanDistance = getManhattanDistance(sensor, beacon)
+        signalMapDistances.put(sensor, manhattanDistance)
+    }
     
+    inputPositions.forEach {
+        val (sensor, beacon) = it
+        val manhattanDistance = getManhattanDistance(sensor, beacon)
+        val borderAdjacentPositions = getBorderPositions(sensor, manhattanDistance)
+
+        val filteredBorderAdjacentPositions = borderAdjacentPositions
+            .filter { it.x in 0 .. searchSpace }
+            .filter { it.y in 0 .. searchSpace }
+        
+        filteredBorderAdjacentPositions.forEach {
+            val positionIsUncovered = signalMapDistances.all { (sensor, distanceCovered) ->
+                val positionDistance = getManhattanDistance(sensor, it)
+                positionDistance > distanceCovered
+            }
+
+            if (positionIsUncovered) {
+                println("Position $it uncovered, return")
+                return (it.x.toLong() * 4_000_000L) + it.y.toLong()
+            }
+        }
+    }
+
+    return 0L
+}
+
+fun getBorderPositions(sensor: Pos<Int>, distance: Int): List<Pos<Int>> {
     
-    val answer = Pos(14, 11)
+    val borderAdjacentDistance = distance + 1
     
-    return answer.x * 4_000_000 + answer.y
+    val borderPositions = mutableListOf<Pos<Int>>()
+    
+    for (xOffset in 0 .. borderAdjacentDistance) {
+        val yOffset = (borderAdjacentDistance - xOffset.absoluteValue)
+        borderPositions.add(Pos(sensor.x + xOffset, sensor.y + yOffset))
+        borderPositions.add(Pos(sensor.x + xOffset, sensor.y - yOffset))
+        borderPositions.add(Pos(sensor.x - xOffset, sensor.y + yOffset))
+        borderPositions.add(Pos(sensor.x - xOffset, sensor.y - yOffset))
+    }
+    
+    return borderPositions
 }
 
 // Essentially a pair, but reference x and y instead of first and second.
@@ -30,29 +74,30 @@ fun beaconExclusionZone(input: String, rowToCount: Int): Int {
 
     val signalMap = mutableMapOf<Pos<Int>, Char>()
     
-    inputPositions.forEach {
+    inputPositions.forEach{
         val (sensor, beacon) = it
-        
         signalMap.put(sensor, 'S')
         signalMap.put(beacon, 'B')
-        
-        val dX = (sensor.x - beacon.x).absoluteValue
-        val dY = (sensor.y - beacon.y).absoluteValue
-        val manhattanDistance = dX + dY
-        
-//        println("For sensor: $sensor, beacon: $beacon, distance = $manhattanDistance")
-
+        val manhattanDistance = getManhattanDistance(sensor, beacon)
         fillMapFromSensorWithDistance(signalMap, sensor, manhattanDistance, rowToCount)
-        
     }
-    
+
+    // Debug only
 //    printSignalMap(signalMap)
-
-
+    
     val notBeaconCount = signalMap.filter { it.key.y == rowToCount }
         .filter { it.value == '#' }
         .count()
     return notBeaconCount
+}
+
+private fun getManhattanDistance(
+    posA: Pos<Int>,
+    posB: Pos<Int>
+): Int {
+    val dX = (posA.x - posB.x).absoluteValue
+    val dY = (posA.y - posB.y).absoluteValue
+    return dX + dY
 }
 
 private fun parseInputPositions(input: String): List<Pair<Pos<Int>, Pos<Int>>> {
@@ -84,13 +129,12 @@ fun fillMapFromSensorWithDistance(
     distance: Int,
     rowToCount: Int
 ) {
-    val checkYRange = sensor.y - distance .. sensor.y + distance
-    if (rowToCount !in checkYRange) {
+    if (rowToCount !in sensor.y - distance..sensor.y + distance) {
         return
     }
-    
+
     val remainingDistance = distance - ((sensor.y - rowToCount).absoluteValue)
-    
+
     for (xDiff in -remainingDistance .. remainingDistance) {
         val x = sensor.x + xDiff
         val pos = Pos(x, rowToCount)
@@ -101,7 +145,7 @@ fun fillMapFromSensorWithDistance(
 }
 
 fun printSignalMap(map: Map<Pos<Int>, Char>) {
-    val xAxisFrequency = 5 // TODO -> Constant?
+    val xAxisFrequency = 5 
     
     val minX = map.keys.map { it.x }.min()
     val maxX = map.keys.map { it.x }.max()
