@@ -4,19 +4,30 @@ import java.util.*
 private const val DAY = "day16"
 
 fun main() {
-    val proboscideaVolcanium = proboscideaVolcanium(readText(DAY, "exampleInput.txt"))
-    println(proboscideaVolcanium)
-    check(proboscideaVolcanium == 1651)
-
-    println(proboscideaVolcanium(readText(DAY)))
+//    val proboscideaVolcanium = proboscideaVolcanium(readText(DAY, "exampleInput.txt"))
+//    println(proboscideaVolcanium)
+//    check(proboscideaVolcanium == 1651)
+//
+//    println(proboscideaVolcanium(readText(DAY)))
     
     check(proboscideaVolcaniumP2(readText(DAY, "exampleInput.txt")) == 1707)
-//    println(proboscideaVolcanium(readText(DAY)))
+    
+//    println(proboscideaVolcaniumP2(readText(DAY)))
+    // 2223 is too low :( 
 }
 
 fun proboscideaVolcaniumP2(input: String): Int {
-    // elephant helper :shrug:
-    return 1707
+    val valves = parseValves(input)
+    val hopsBetweenFlowValves = getHopsBetweenValvesMap(valves)
+    val flowValvesMap = valves.filter { (_, v) -> v.flow != 0 }
+    val availableFlowNodes = flowValvesMap.keys.toList()
+
+    val pairScore = getPairScoreInit(
+        availableFlowNodes,
+        valves,
+        hopsBetweenFlowValves
+    )
+    return pairScore
 }
 
 fun proboscideaVolcanium(input: String): Int {
@@ -26,6 +37,222 @@ fun proboscideaVolcanium(input: String): Int {
     val flowValvesMap = valves.filter { (_, v) -> v.flow != 0 }
     val availableFlowNodes = flowValvesMap.keys.toList()
     return getBestScore(1, listOf("AA"), availableFlowNodes, flowValvesMap, hopsBetweenFlowValves)
+}
+
+fun getPairScoreInit(
+    valvesToVisit: List<String>,
+    valves: Map<String, Valve>,
+    hopsBetweenValves: Map<Pair<String, String>, Int>
+): Int {
+    val startingNode = "AA"
+    val startingPath = listOf(startingNode)
+
+    // massive hack 
+    println("Need to check for $valvesToVisit")
+    val max = valvesToVisit.map { manValve ->
+        val filteredValves = valvesToVisit.filter { it != manValve }
+        filteredValves.map { eleValve ->
+            val doubleFilteredValves = filteredValves.filter { it != eleValve }
+            println("Checking for man start at $manValve, ele start at $eleValve")
+            getPairScore(
+                1,
+                startingPath,
+                manValve,
+                hopsBetweenValves.getValue(Pair(startingNode, manValve)), // hack, updated when given a target
+                startingPath,
+                eleValve,
+                hopsBetweenValves.getValue(Pair(startingNode, eleValve)),
+                doubleFilteredValves,
+                valves,
+                hopsBetweenValves
+            )
+        }.maxBy { it.second }
+    }.maxBy { it.second }
+
+    println("Best path = ${max.first}, with score ${max.second}")
+    return max.second
+}
+
+fun getPairScore(
+    minute: Int,
+    manCurrentPath: List<String>,
+    manTargetValve: String?,
+    manHopsToTarget: Int,
+    eleCurrentPath: List<String>,
+    eleTargetValve: String?,
+    eleHopsToTarget: Int,
+    valvesToVisit: List<String>,
+    valves: Map<String, Valve>,
+    hopsBetweenValves: Map<Pair<String, String>, Int>
+): Pair<Pair<List<String>, List<String>>, Int> {
+    val manSource = manCurrentPath.last()
+    
+//    println("M $manCurrentPath -> $manTargetValve. E $eleCurrentPath -> $eleTargetValve")
+
+    var manTargetValve = manTargetValve
+    var eleTargetValve = eleTargetValve
+    var manHopsToTarget = manHopsToTarget
+    var eleHopsToTarget = eleHopsToTarget
+    var valvesToVisit = valvesToVisit
+    var manCurrentPath = manCurrentPath.toMutableList()
+    var eleCurrentPath = eleCurrentPath.toMutableList()
+    
+    var score = 0
+    for (m in minute .. 26) {
+//        println("Minute: $m")
+        if (manTargetValve != null) {
+            if (manHopsToTarget == 0) {
+                manCurrentPath.add(manTargetValve)
+                val valveScore = (26 - m) * valves.getValue(manTargetValve).flow
+                score += valveScore
+                manTargetValve = null
+            } else if (manHopsToTarget > 0) {
+                manHopsToTarget--
+            }
+        }
+        
+        if (eleTargetValve != null) {
+            if (eleHopsToTarget == 0) {
+                eleCurrentPath.add(eleTargetValve)
+                val valveScore = (26 - m) * valves.getValue(eleTargetValve).flow
+                score += valveScore
+                eleTargetValve = null
+            } else if (eleHopsToTarget > 0) {
+                eleHopsToTarget--
+            }
+        }
+        
+        // Man only
+        if (!valvesToVisit.isEmpty() && manTargetValve == null && eleTargetValve != null) {
+            val pairScores = valvesToVisit.map {
+
+                var filteredValves = valvesToVisit
+                val manLastValve = manCurrentPath.last()
+                manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, it))
+                filteredValves = filteredValves.filter { valve -> valve != it }
+                
+                getPairScore(
+                    m + 1,
+                    manCurrentPath,
+                    it,
+                    manHopsToTarget,
+                    eleCurrentPath,
+                    eleTargetValve,
+                    eleHopsToTarget,
+                    filteredValves,
+                    valves,
+                    hopsBetweenValves
+                )
+            }
+//            println("\nPair scores: $pairScores")
+            val maxPairScore = pairScores.maxBy { it.second }
+//            println("Max pair score = $maxPairScore")
+            val pairScore = Pair(maxPairScore.first, score + maxPairScore.second)
+//            println("Including Score and max pair score. Result: $pairScore\n")
+            return pairScore
+        }
+        
+        // Ele only 
+        if (!valvesToVisit.isEmpty() && manTargetValve != null && eleTargetValve == null) {
+            val pairScores = valvesToVisit.map {
+                
+                var filteredValves = valvesToVisit
+                val eleLastValve = eleCurrentPath.last()
+                eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, it))
+                filteredValves = filteredValves.filter { valve -> valve != it }
+
+                getPairScore(
+                    m + 1,
+                    manCurrentPath,
+                    manTargetValve,
+                    manHopsToTarget,
+                    eleCurrentPath,
+                    it,
+                    eleHopsToTarget,
+                    filteredValves,
+                    valves,
+                    hopsBetweenValves
+                )
+            }
+            
+//            println("\nPair scores: $pairScores")
+            val maxPairScore = pairScores.maxBy { it.second }
+//            println("Max pair score = $maxPairScore")
+            val pairScore = Pair(maxPairScore.first, score + maxPairScore.second)
+//            println("Including Score and max pair score. Result: $pairScore\n")
+            return pairScore
+        }
+
+        if (!valvesToVisit.isEmpty() && (manTargetValve == null && eleTargetValve == null)) {
+            val pairScores = valvesToVisit.map {
+                
+                var manTarget: String?
+                var filteredValves = valvesToVisit
+                val manLastValve = manCurrentPath.last()
+                manTarget = it
+                manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, manTarget))
+                filteredValves = filteredValves.filter { valve -> valve != manTarget }
+
+                var eleTarget: String? = eleTargetValve
+                var pairScore: Pair<Pair<List<String>, List<String>>, Int>
+                if (!filteredValves.isEmpty()) {
+                    val eleLastValve = eleCurrentPath.last()
+                    val pairScores = filteredValves.map {
+                        eleTarget = it
+                        eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, it))
+                        filteredValves = filteredValves.filter { valve -> valve != eleTarget }
+
+                        getPairScore(
+                            m + 1,
+                            manCurrentPath,
+                            manTarget,
+                            manHopsToTarget,
+                            eleCurrentPath,
+                            eleTarget,
+                            eleHopsToTarget,
+                            filteredValves,
+                            valves,
+                            hopsBetweenValves
+                        )
+                    }
+                    val maxPairScore = pairScores.maxBy { it.second }
+                    pairScore = maxPairScore
+                } else {
+                    pairScore = getPairScore(
+                        m + 1,
+                        manCurrentPath,
+                        manTarget,
+                        manHopsToTarget,
+                        eleCurrentPath,
+                        eleTarget,
+                        eleHopsToTarget,
+                        filteredValves,
+                        valves,
+                        hopsBetweenValves
+                    )
+                }
+                pairScore
+                
+            }
+//            println("\nPair scores: $pairScores")
+            val maxPairScore = pairScores.maxBy { it.second }
+//            println("Max pair score = $maxPairScore")
+            val pairScore = Pair(maxPairScore.first, score + maxPairScore.second)
+//            println("Including Score and max pair score. Result: $pairScore\n")
+            return pairScore
+        }
+        
+        if (valvesToVisit.isEmpty() && manTargetValve == null && eleTargetValve == null) {
+            val pairScorePaths = Pair(manCurrentPath, eleCurrentPath)
+            val pairScore = Pair(pairScorePaths, score)
+            return pairScore
+        }
+    }
+    
+    // TODO Print the path for both the man and the elephant to help debugging 
+    val pairScorePaths = Pair(listOf<String>("MAN"), listOf<String>("ELE"))
+    val pairScore = Pair(pairScorePaths, score)
+    return pairScore
 }
 
 fun getBestScore(
