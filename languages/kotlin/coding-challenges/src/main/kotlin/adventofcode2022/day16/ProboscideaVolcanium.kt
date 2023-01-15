@@ -10,10 +10,9 @@ fun main() {
 //
 //    println(proboscideaVolcanium(readText(DAY)))
     
-    check(proboscideaVolcaniumP2(readText(DAY, "exampleInput.txt")) == 1707)
-    
-//    println(proboscideaVolcaniumP2(readText(DAY)))
-    // 2223 is too low :( 
+//    check(proboscideaVolcaniumP2(readText(DAY, "exampleInput.txt")) == 1707)
+
+    println(proboscideaVolcaniumP2(readText(DAY)))
 }
 
 fun proboscideaVolcaniumP2(input: String): Int {
@@ -48,6 +47,7 @@ fun getPairScoreInit(
     val startingPath = listOf(startingNode)
 
     // massive hack 
+    
     println("Need to check for $valvesToVisit")
     val max = valvesToVisit.map { manValve ->
         val filteredValves = valvesToVisit.filter { it != manValve }
@@ -184,62 +184,144 @@ fun getPairScore(
         }
 
         if (!valvesToVisit.isEmpty() && (manTargetValve == null && eleTargetValve == null)) {
-            val pairScores = valvesToVisit.map {
-                
-                var manTarget: String?
-                var filteredValves = valvesToVisit
-                val manLastValve = manCurrentPath.last()
-                manTarget = it
-                manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, manTarget))
-                filteredValves = filteredValves.filter { valve -> valve != manTarget }
 
-                var eleTarget: String? = eleTargetValve
-                var pairScore: Pair<Pair<List<String>, List<String>>, Int>
-                if (!filteredValves.isEmpty()) {
-                    val eleLastValve = eleCurrentPath.last()
-                    val pairScores = filteredValves.map {
-                        eleTarget = it
-                        eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, it))
-                        filteredValves = filteredValves.filter { valve -> valve != eleTarget }
+            val manLastValve = manCurrentPath.last()
+            val eleLastValve = eleCurrentPath.last()
+            
+            // If Only a single option remaining, test both man + ele trying it
+            if (valvesToVisit.size == 1) {
+                val targetValve = valvesToVisit.first()
+                manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, targetValve))
+                eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, targetValve))
 
-                        getPairScore(
-                            m + 1,
-                            manCurrentPath,
-                            manTarget,
-                            manHopsToTarget,
-                            eleCurrentPath,
-                            eleTarget,
-                            eleHopsToTarget,
-                            filteredValves,
-                            valves,
-                            hopsBetweenValves
-                        )
-                    }
-                    val maxPairScore = pairScores.maxBy { it.second }
-                    pairScore = maxPairScore
-                } else {
-                    pairScore = getPairScore(
+                val filteredValves = valvesToVisit.filter { it != targetValve }
+
+                val pairScores = listOf(
+                    getPairScore( // Man
                         m + 1,
                         manCurrentPath,
-                        manTarget,
-                        manHopsToTarget,
+                        targetValve,
+                        manHopsToTarget, 
                         eleCurrentPath,
-                        eleTarget,
+                        eleTargetValve,
+                        eleHopsToTarget,
+                        filteredValves,
+                        valves,
+                        hopsBetweenValves
+                    ),
+                    getPairScore( // Ele
+                        m + 1,
+                        manCurrentPath,
+                        manTargetValve,
+                        manHopsToTarget, 
+                        eleCurrentPath,
+                        targetValve,
                         eleHopsToTarget,
                         filteredValves,
                         valves,
                         hopsBetweenValves
                     )
+                )
+                val maxPair = pairScores.maxBy { it.second }
+                return Pair(maxPair.first, score + maxPair.second)
+            } else {
+                // More than 1 itme remianing, check all of them
+                val maxPairs = valvesToVisit.map { manValve ->
+
+                    manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, manValve))
+                    val filteredValves = valvesToVisit.filter { it != manValve }
+                    if (filteredValves.isEmpty()) {
+                        val pScore = getPairScore(
+                            m + 1,
+                            manCurrentPath,
+                            manValve,
+                            manHopsToTarget, // hack, updated when given a target
+                            eleCurrentPath,
+                            eleTargetValve,
+                            eleHopsToTarget,
+                            filteredValves,
+                            valves,
+                            hopsBetweenValves
+                        )
+                        pScore
+                    } else {
+                        val pScores = filteredValves.map { eleValve ->
+                            val doubleFilteredValves = filteredValves.filter { it != eleValve }
+                            eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, eleValve))
+                            val pScore = getPairScore(
+                                m + 1,
+                                manCurrentPath,
+                                manValve,
+                                manHopsToTarget, // hack, updated when given a target
+                                eleCurrentPath,
+                                eleValve,
+                                eleHopsToTarget,
+                                doubleFilteredValves,
+                                valves,
+                                hopsBetweenValves
+                            )
+                            pScore
+                        }
+                        pScores.maxBy { it.second }
+                    }
                 }
-                pairScore
-                
+                val maxPair = maxPairs.maxBy { it.second }
+                return Pair(maxPair.first, score + maxPair.second)
             }
-//            println("\nPair scores: $pairScores")
-            val maxPairScore = pairScores.maxBy { it.second }
-//            println("Max pair score = $maxPairScore")
-            val pairScore = Pair(maxPairScore.first, score + maxPairScore.second)
-//            println("Including Score and max pair score. Result: $pairScore\n")
-            return pairScore
+            
+//            val pairScores = valvesToVisit.map {
+//                
+//                var manTarget: String?
+//                var filteredValves = valvesToVisit
+//                val manLastValve = manCurrentPath.last()
+//                manTarget = it
+//                manHopsToTarget = hopsBetweenValves.getValue(Pair(manLastValve, manTarget))
+//                filteredValves = filteredValves.filter { valve -> valve != manTarget }
+//
+//                var eleTarget: String? = eleTargetValve
+//                var pairScore: Pair<Pair<List<String>, List<String>>, Int>
+//                if (!filteredValves.isEmpty()) {
+//                    val eleLastValve = eleCurrentPath.last()
+//                    val pairScores = filteredValves.map {
+//                        eleTarget = it
+//                        eleHopsToTarget = hopsBetweenValves.getValue(Pair(eleLastValve, it))
+//                        filteredValves = filteredValves.filter { valve -> valve != eleTarget }
+//
+//                        getPairScore(
+//                            m + 1,
+//                            manCurrentPath,
+//                            manTarget,
+//                            manHopsToTarget,
+//                            eleCurrentPath,
+//                            eleTarget,
+//                            eleHopsToTarget,
+//                            filteredValves,
+//                            valves,
+//                            hopsBetweenValves
+//                        )
+//                    }
+//                    val maxPairScore = pairScores.maxBy { it.second }
+//                    pairScore = maxPairScore
+//                } else {
+//                    pairScore = getPairScore(
+//                        m + 1,
+//                        manCurrentPath,
+//                        manTarget,
+//                        manHopsToTarget,
+//                        eleCurrentPath,
+//                        eleTarget,
+//                        eleHopsToTarget,
+//                        filteredValves,
+//                        valves,
+//                        hopsBetweenValves
+//                    )
+//                }
+//                pairScore
+//                
+//            }
+//            val maxPairScore = pairScores.maxBy { it.second }
+//            val pairScore = Pair(maxPairScore.first, score + maxPairScore.second)
+//            return pairScore
         }
         
         if (valvesToVisit.isEmpty() && manTargetValve == null && eleTargetValve == null) {
