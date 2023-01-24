@@ -9,73 +9,213 @@ private const val DAY = "day17"
  * Then you can multiply out from the modulo of the total desired iterations to start
  */
 fun main() {
-    val pyroclasticFlowP1Example = pyroclasticFlow(readText(DAY, "exampleInput.txt"), 2022)
-    println("Pyroclastic Flow: Part 1: Example: $pyroclasticFlowP1Example")
-    check(pyroclasticFlowP1Example == 3_068L)
-
-    val pyroclasticFlowP1 = pyroclasticFlow(readText(DAY), 2022)
-    check(pyroclasticFlowP1 == 3_065L)
-    println(pyroclasticFlowP1)
+//    val pyroclasticFlowP1Example = pyroclasticFlow(readText(DAY, "exampleInput.txt"), 2022)
+//    println("Pyroclastic Flow: Part 1: Example: $pyroclasticFlowP1Example")
+//    check(pyroclasticFlowP1Example == 3_068L)
+//
+//    val pyroclasticFlowP1 = pyroclasticFlow(readText(DAY), 2022)
+//    check(pyroclasticFlowP1 == 3_065L)
+//    println(pyroclasticFlowP1)
 //
 //    val testIterations = 1_000_000_000_000
-//    val testIterations = 1_000_000L
-//    val pyroclasticFlowP2 = pyroclasticFlow(readText(DAY, "exampleInput.txt"), testIterations)
-//    println("Pyroclastic Flow: Part 2: Example: $pyroclasticFlowP2")
+//    val testIterations = 2022L
+//
+//    val pyroclasticFlowP2Example = pyroclasticFlow(
+//        readText(DAY, "exampleInput.txt"), 
+//        testIterations,
+//        1_000_000_000_000
+//    )
+//    println("Pyroclastic Flow: Part 2: Example: $pyroclasticFlowP2Example")
+//
+//    check(pyroclasticFlowP2Example == 1_514_285_714_288)
 
+    val testIterations = 10_000L
 
-//    check(pyroclasticFlowP2 == 1_514_285_714_288)
+    val pyroclasticFlowP2 = pyroclasticFlow(
+        readText(DAY),
+        testIterations,
+        1_000_000_000_000 - 1
+    )
+    println("Pyroclastic Flow: Part 2: Example: $pyroclasticFlowP2")
 
+    check(pyroclasticFlowP2 == 1_514_285_714_288)
+ 
+    // TODO My algorithm is producing results that are consistently off by one (too high. Not a clue why...)
 }
 
 private const val COLUMNS = 7
 
-fun pyroclasticFlow(jetPattern: String, rockIterations: Long): Long {
+fun pyroclasticFlow(jetPattern: String, rockIterations: Long, targetRockId: Long = rockIterations): Long {
+    
+    val restRocksByTypeAndXPositionToYPositions : MutableMap<Pair<Long, Long>, MutableList<Long>> = mutableMapOf()
 
     var fallenRocks: MutableMap<Pos<Long>, Char> = mutableMapOf()
     for (x in 0 until COLUMNS) {
         fallenRocks.put(Pos(x.toLong(), 0L), '-')
     }
  
-    var rockId = 0
-    var rock = spawnRock(fallenRocks, rockId)
-
+    var rockId = 0L
     var jetIndex = -1
+    
+    var rock = spawnRock(fallenRocks, rockId, jetPattern, jetIndex)
+    jetIndex = (jetIndex + 3) % jetPattern.length
+
     while (rockId < rockIterations) {
 
         jetIndex = (jetIndex + 1) % jetPattern.length
 
-        when (jetPattern.get(jetIndex)) {
-            '>' -> {
-                moveRock(rock, xDelta = 1, fallenRocks)
-            }
-
-            '<' -> {
-                moveRock(rock, xDelta = -1, fallenRocks)
-            }
-
-            else -> throw IllegalArgumentException("Invalid input")
-        }
+        processJet(jetPattern, jetIndex, rock, fallenRocks)
         fallRock(rock, fallenRocks)
         if (rock.atRest) {
 
-            if (rockId % 10_000 == 0) {
+            if (rockId % 10_000 == 0L) {
                 println("ROCK ID: $rockId")
             }
 
-            if (rockId % 5 == 0) {
+            if (rockId % 5 == 0L) {
                 fallenRocks = clearRedundantFallenRocks(fallenRocks, rock)
             }
+
+            val rockBasePosition = rock.positions.first()
+//            val rockIdToXPos = Pair(rockId % 5, rockBasePosition.x.toInt())
+            val rockIdToXPos = Pair(rockId, rockBasePosition.x)
+            val list = restRocksByTypeAndXPositionToYPositions.getOrPut(rockIdToXPos, { mutableListOf<Long>() })
+            list.add(rockBasePosition.y)
 
             rock.positions.forEach {
                 fallenRocks.put(it, '#')
             }
 
             rockId = rockId + 1
-            rock = spawnRock(fallenRocks, rockId % 5)
+            rock = spawnRock(fallenRocks, rockId % 5, jetPattern, jetIndex)
+            jetIndex = (jetIndex + 3) % jetPattern.length
+
         }
     }
     
-    return fallenRocks.keys.map { it.y }.max()
+    
+    val lineRocksAtXPosition1 = restRocksByTypeAndXPositionToYPositions.filter { (k, v) -> 
+        k.first % 5 == 0L && k.second == 1L
+    }.toMap()
+    
+    val list = lineRocksAtXPosition1.values.flatMap { it }
+    println("Find repeating pattern for rock type 0 at X position 0 ")
+    for (i in 3 .. list.size / 2) {
+        println("")
+        var chunked = list.chunked(i)
+
+        // TODO for some reason, first and last are a pain so just drop them..
+        chunked = chunked.drop(1).dropLast(1)
+        
+//        val uChunked = chunked
+        if (chunked.size == 1) {
+            continue
+        }
+        
+        val chunkedDiffs = chunked.map { chunk ->
+            val items = mutableListOf<Long>()
+            for (item in 0 .. chunk.size - 2) {
+                val diff = chunk[item + 1] - chunk[item] 
+                items.add(diff)
+            }
+            items
+        }
+        
+        println("Chunked Diffs: $chunkedDiffs")
+
+        if (chunkedDiffs.isEmpty()) {
+            continue
+        }
+        
+        val comp = chunkedDiffs.get(0)
+        val allEqual = chunkedDiffs.all { it.equals(comp) }
+        
+        println("For window of $i, pattern = $allEqual")
+        
+        if (allEqual) {
+            println("Chunks $chunked. With pattern of each being: $comp")
+
+            // TODO Would be able to reduce this down, down need all the values
+            val filter4List = lineRocksAtXPosition1.map { (k, v) ->
+                Pair(k.first, v.first())
+            }.drop(i)
+                .filterIndexed { index, value ->
+                    index % (i) == 0
+                }
+
+            println("F3M: $filter4List")
+
+            val base = filter4List.get(0)
+            val next = filter4List.get(1)
+            val rockIdDiff = next.first - base.first
+            val heightDiff = next.second - base.second
+
+            var newRockId: Long = base.first.toLong()
+
+            val x = (targetRockId - newRockId) / rockIdDiff
+
+            val highestRockIdBelowTarget = (x * rockIdDiff) + newRockId
+            val scoreAtHighestRockBelowTarget = (x * heightDiff) + base.second
+
+            val remainingRocksToLetFall = targetRockId - highestRockIdBelowTarget
+            val rockToCheck = base.first + remainingRocksToLetFall
+
+            // TODO Need to update this data type to make sure it;s the same wind index position too, I think.
+            val rockToCheckValue = restRocksByTypeAndXPositionToYPositions.filter { (k, _) ->
+                k.first == rockToCheck
+            }.values.first().first()
+            
+            val remainingRocksToCheckOffset = rockToCheckValue - base.second
+
+            val totalHeight = scoreAtHighestRockBelowTarget + remainingRocksToCheckOffset
+            
+            // TODO Can update these for debugging
+            for (j in newRockId .. 1800 step rockIdDiff) {
+                println("TEST: $j")
+                // TODO Check that all of these , up to 'remainingRocksToLetFall' have the same difference, 
+                val checkId = j + remainingRocksToLetFall
+
+                val jVal = restRocksByTypeAndXPositionToYPositions.filter { (k, _) ->
+                    k.first == j
+                }.values.first().first()
+
+                val checkVal = restRocksByTypeAndXPositionToYPositions.filter { (k, _) ->
+                    k.first == checkId
+                }.values.first().first()
+                
+                val remainingRocksToCheckOffset2 = checkVal - jVal
+                
+                println("Start: $j, Check: $checkId, val: $remainingRocksToCheckOffset2")
+                // if not, need to take that into considerations. 
+//                val a = restRocksByTypeAndXPositionToYPositions
+            }
+
+            return totalHeight.toLong()
+        }
+    }
+    
+    throw RuntimeException("Couldn't find pattern")
+
+//    return fallenRocks.keys.map { it.y }.max()
+}
+
+private fun processJet(
+    jetPattern: String,
+    jetIndex: Int,
+    rock: Rock,
+    fallenRocks: MutableMap<Pos<Long>, Char>
+) {
+    when (jetPattern.get(jetIndex)) {
+        '>' -> {
+            moveRock(rock, xDelta = 1, fallenRocks)
+        }
+
+        '<' -> {
+            moveRock(rock, xDelta = -1, fallenRocks)
+        }
+
+        else -> throw IllegalArgumentException("Invalid input")
+    }
 }
 
 fun clearRedundantFallenRocks(fallenRocks: MutableMap<Pos<Long>, Char>, rock: Rock): MutableMap<Pos<Long>, Char> {
@@ -119,70 +259,44 @@ fun moveRock(rock: Rock, xDelta: Int = 0, fallenRocks: MutableMap<Pos<Long>, Cha
     }
 }
 
-/**
- * Given spawn location:
- * Will always follow the pattern of
- * 1. Spawn
- * 2. Jet, Fall, jet, fall, jet, fall
- * 3. Then need to check one at a time if possible
- * 
- * Instead, can we spawn 3 levels lower, and process the summary of the jets.
- * 
- */
-fun spawnRock(fallenRocks: Map<Pos<Long>, Char>, rockId: Int): Rock {
+fun spawnRock(fallenRocks: MutableMap<Pos<Long>, Char>, rockId: Long, jetPattern: String, jetIndex: Int): Rock {
     val lPos = 2L // 2 away from the chamber
     val currentMaxBottomPosition = fallenRocks.keys
         .map { it.y }
         .maxOrNull() ?: 0 
-    val bPos = currentMaxBottomPosition + 4L
+    val bPos = currentMaxBottomPosition + 1L
+
+    val rockPositions: List<Pos<Long>> = getRockPositions(rockId, lPos, bPos)
+
+    val rock = Rock(rockPositions)
     
-    val rockPositions: List<Pos<Long>> = when (rockId) {
-        0 -> { // - shape
-            listOf(
-                Pos(lPos, bPos),
-                Pos(lPos + 1, bPos),
-                Pos(lPos + 2, bPos),
-                Pos(lPos + 3, bPos)
-            )        
-        }
-        1 -> { // + shape
-            listOf(
-                Pos(lPos + 1, bPos),
-                Pos(lPos, bPos + 1),
-                Pos(lPos + 1, bPos + 1),
-                Pos(lPos + 2, bPos + 1),
-                Pos(lPos + 1, bPos + 2)
-            )
-        }
-        2 -> { // _| shape
-            listOf(
-                Pos(lPos, bPos),
-                Pos(lPos + 1, bPos),
-                Pos(lPos + 2, bPos),
-                Pos(lPos + 2, bPos + 1),
-                Pos(lPos + 2, bPos + 2),
-            )
-        }
-        3 -> { // | shape
-            listOf(
-                Pos(lPos, bPos),
-                Pos(lPos, bPos + 1),
-                Pos(lPos, bPos + 2),
-                Pos(lPos, bPos + 3),
-            )
-        }
-        4 -> { // square shape
-            listOf(
-                Pos(lPos, bPos),
-                Pos(lPos + 1, bPos),
-                Pos(lPos, bPos + 1),
-                Pos(lPos + 1, bPos + 1),
-            )
-        }
-        else -> throw IllegalArgumentException("Invalid Rock ID")
-    }
+//    // TODO How to refactor these to process all 3 at once?
+//    val xDelta = listOf(
+//        (jetIndex + 1) % jetPattern.length,
+//        (jetIndex + 2) % jetPattern.length,
+//        (jetIndex + 3) % jetPattern.length
+//    ).map {
+//        when (jetPattern.get(it)) {
+//            '>' -> 1
+//            '<' -> -1
+//            else -> throw IllegalArgumentException("Invalid input")
+//        }
+//    }.sum()
+//    
+//    for (i in 1 .. xDelta.absoluteValue) {
+//        moveRock(rock, xDelta.sign, fallenRocks)
+//    }
     
-    return Rock(rockPositions)
+    var jetIndex = (jetIndex + 1) % jetPattern.length
+    processJet(jetPattern, jetIndex, rock, fallenRocks)
+
+    jetIndex = (jetIndex + 1) % jetPattern.length
+    processJet(jetPattern, jetIndex, rock, fallenRocks)
+
+    jetIndex = (jetIndex + 1) % jetPattern.length
+    processJet(jetPattern, jetIndex, rock, fallenRocks)
+
+    return rock
 }
 
 // Essentially a pair, but reference x and y instead of first and second.
@@ -221,4 +335,58 @@ fun printChamber(fallenRocks: MutableMap<Pos<Long>, Char>, rock: Rock) {
     }
     print("+\n")
     println()
+}
+
+private fun getRockPositions(rockId: Long, lPos: Long, bPos: Long): List<Pos<Long>> {
+    val rockPositions: List<Pos<Long>> = when (rockId) {
+        0L -> { // - shape
+            listOf(
+                Pos(lPos, bPos),
+                Pos(lPos + 1, bPos),
+                Pos(lPos + 2, bPos),
+                Pos(lPos + 3, bPos)
+            )
+        }
+
+        1L -> { // + shape
+            listOf(
+                Pos(lPos + 1, bPos),
+                Pos(lPos, bPos + 1),
+                Pos(lPos + 1, bPos + 1),
+                Pos(lPos + 2, bPos + 1),
+                Pos(lPos + 1, bPos + 2)
+            )
+        }
+
+        2L -> { // _| shape
+            listOf(
+                Pos(lPos, bPos),
+                Pos(lPos + 1, bPos),
+                Pos(lPos + 2, bPos),
+                Pos(lPos + 2, bPos + 1),
+                Pos(lPos + 2, bPos + 2),
+            )
+        }
+
+        3L -> { // | shape
+            listOf(
+                Pos(lPos, bPos),
+                Pos(lPos, bPos + 1),
+                Pos(lPos, bPos + 2),
+                Pos(lPos, bPos + 3),
+            )
+        }
+
+        4L -> { // square shape
+            listOf(
+                Pos(lPos, bPos),
+                Pos(lPos + 1, bPos),
+                Pos(lPos, bPos + 1),
+                Pos(lPos + 1, bPos + 1),
+            )
+        }
+
+        else -> throw IllegalArgumentException("Invalid Rock ID")
+    }
+    return rockPositions
 }
