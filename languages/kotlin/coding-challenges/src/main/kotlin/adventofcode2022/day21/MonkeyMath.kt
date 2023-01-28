@@ -4,8 +4,6 @@ import adventofcode2022.readText
 
 private const val DAY = "day21"
 
-
-
 fun main() {
     check(monkeyMath(readText(DAY, "exampleInput.txt")) == 152L)
 //    println(monkeyMath(readText(DAY)))
