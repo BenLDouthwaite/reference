@@ -5,21 +5,22 @@ import adventofcode2022.readText
 
 private const val DAY = "day22"
 
-fun main() {
-    check(monkeyMap(readText(DAY, "exampleInput.txt")) == 6032)
-    println(monkeyMap(readText(DAY)))
+private const val DEBUG = false
 
-//    check(monkeyMap(readText(DAY, "exampleInput.txt")) == 301L)
+fun main() {
+//    check(monkeyMap(readText(DAY, "exampleInput.txt")) == 6032)
 //    println(monkeyMap(readText(DAY)))
 
+    check(monkeyMap(readText(DAY, "exampleInput.txt"), true) == 5031)
+    check(monkeyMap(readText(DAY, "exampleInput2.txt")) == 1206)
+    println(monkeyMap(readText(DAY)))
+
+    // 130262 = too high
+    // 129000 = too high
+    // 80000 = too low.
 }
 
-fun monkeyMapP2(input: String): Int {
-    println("God knows")
-    return 0
-} 
-
-fun monkeyMap(input: String): Int {
+fun monkeyMap(input: String, isExample: Boolean = false): Int {
     println(input)
     val (mapInput, commands) = input.split("\n\n")
 //    println("Map: $mapInput")
@@ -27,7 +28,7 @@ fun monkeyMap(input: String): Int {
     val commandsList = getCommandsList(commands)
 
     val map = parseMap(mapInput)
-    printMap(map)
+//    printMap(map)
     
     val mapXRanges = getXRanges(map)
     val mapYRanges = getYRanges(map)
@@ -35,84 +36,76 @@ fun monkeyMap(input: String): Int {
     var curPos = getStartingPos(map)
     var direction = EAST
     
-    println(direction)
-    println(direction.turnRight())
-    
-    println("Starting pos = $curPos")
-    // Process commands
+    println("Starting pos = $curPos, direction = $direction")
 
-    // Begin main loop
     commandsList.forEach {
         val (command, steps) = it
         
         println("\n Processing command $command, for $steps, starting at $curPos, facing $direction\n")
-        
+                
         when (command) {
             'R' -> {
-                println("Turn right")
+                print("Turn right from $direction - ")
                 direction = direction.turnRight()
+                println("to $direction")
             }
             'L' -> {
-                println("Turn left")
+                print("Turn left from $direction - ")
                 direction = direction.turnLeft()
+                println("to $direction")
             }
             'F' -> {
                 println("Move forward $steps spaces")
                 
                 println("Currently at $curPos, facing $direction")
-                
-                // make generic
-                // east so check x + 1
-                val offset = when (direction) {
-                    NORTH -> Pos(0, -1)
-                    EAST -> Pos(1, 0)
-                    SOUTH -> Pos(0, 1)
-                    WEST -> Pos(-1, 0)
-                }
-                
-                for (i in 1 .. steps!!) {
-                    val nextPos = Pos(curPos.x + offset.x, curPos.y + offset.y)
-                    val nextPosValue = map.get(nextPos) ?: ' '
-                    when (nextPosValue) {
-                        ' ' -> {
-                            println("Need to loop around")
-                            
-//                            val (wrappedPos, newDirection) = getWrappedPosAndDirection(curPos, direction, map)
-                            
-                            // Get the coords of next tile after wrapping, 
-                            val wrappedPos = when (direction) {
-                                NORTH -> Pos(curPos.x, mapYRanges.getValue(curPos.x).max())
-                                EAST -> Pos(mapXRanges.getValue(curPos.y).min(), curPos.y)
-                                SOUTH -> Pos(curPos.x, mapYRanges.getValue(curPos.x).min())
-                                WEST -> Pos(mapXRanges.getValue(curPos.y).max(), curPos.y)
-                            }
-                            
-                            // Check if it's a wall, if so, break here
-                            when (map.get(wrappedPos) ?: ' ') {
-                                '.' -> {
-                                    println("WRAP: Empty Space, can move forward")
-                                    curPos = wrappedPos
+
+                var keepMoving = true
+                repeat(steps!!) {
+                    if (keepMoving) {
+                        val offset = when (direction) {
+                            NORTH -> Pos(0, -1)
+                            EAST -> Pos(1, 0)
+                            SOUTH -> Pos(0, 1)
+                            WEST -> Pos(-1, 0)
+                        }
+
+                        var nextPos = Pos(curPos.x + offset.x, curPos.y + offset.y)
+                        var nextDirection = direction
+
+                        if (!map.containsKey(nextPos)) {
+                            println("Need to loop around at : $curPos")
+
+                            val (wrappedPos, newDirection) = when {
+                                isExample -> {
+                                    getWrappedPosAndDirectionExample(curPos, direction)
                                 }
-                                '#' -> {
-                                    println("WRAP: Next step is a wall, this command of moving forward is done")
-                                    break
+                                else -> {
+                                    getWrappedPosAndDirection(curPos, direction)
                                 }
                             }
-                            
+
+                            nextPos = wrappedPos
+                            nextDirection = newDirection
                         }
-                        '.' -> {
-                            println("Empty Space, can move forward")
-                            curPos = nextPos
-                        }
-                        '#' -> {
-                            println("Next step is a wall, this command of moving forward is done")
-                            break
+
+                        when (map.getValue(nextPos)) {
+                            '#' -> {
+                                println("Next step $nextPos is a wall. Stop")
+                                keepMoving = false
+                            }
+                            else -> {
+                                curPos = nextPos
+                                direction = nextDirection
+                                println("Move forward to: $curPos")
+                            }
                         }
                     }
                 }
             }
         }
     }
+
+    printMap(map)
     
     val column = curPos.x
     val row = curPos.y
@@ -127,7 +120,150 @@ fun monkeyMap(input: String): Int {
     return result
 }
 
-// TODO How to combine with YRanges fun?
+fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Pos, Direction> {
+    val GW = 4
+    val gw = 4
+    val g0s = 0
+    val g0e = GW - 1
+    val g1s = GW
+    val g1e = (GW * 2) - 1
+    val g2s = GW * 2
+    val g2e = (GW * 3) - 1
+    val g3s = GW * 3
+    val g3e = (GW * 4 - 1)
+
+    // get block
+    val (cx, cy) = curPos
+
+    val xb = curPos.x / GW
+    val yb = curPos.y / GW
+
+    println("For curPos $curPos. Block = ($xb, $yb)")
+
+    val curBlock = Pos(xb, yb)
+    when (curBlock) {
+        Pos(2, 0) -> {
+            println("Know we're in the (2, 0) (1st) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(g2e - cx, g1s), SOUTH) }
+                EAST -> { return Pair(Pos(g3e, g2e - cy), WEST) }
+                WEST -> { return Pair(Pos(g1s + cy, g1s), SOUTH) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(0,1) -> {
+            println("Know we're in the (0, 1) (2nd) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(g2e - cx, g0s), SOUTH) }
+                SOUTH -> { return Pair(Pos(g2e - cx, g2e), NORTH) }
+                WEST -> { return Pair(Pos(g3e - (cy - gw) , g2e), NORTH) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(1, 1) -> {
+            println("Know we're in the (1,1) (3rd) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(g2s, cx - gw), EAST) }
+                SOUTH -> { return Pair(Pos(g2s, g2s + (g1e - cx)), EAST) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(2, 1) -> {
+            println("Know we're in the (2, 1) (4th) block")
+            when (direction) {
+                EAST -> { return Pair(Pos(g3s + (g1e - cy), g2s), SOUTH) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(2, 2) -> {
+            println("Know we're in the (2, 2) (5th) block")
+            when (direction) {
+                SOUTH -> { return Pair(Pos(g2e - cx, g1e), NORTH) }
+                WEST -> { return Pair(Pos(g1s + (g2e - cy), g1e), NORTH) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(3, 2) -> {
+            println("Know we're in the (0, 3) (6th) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(g2e, g1s + (g3e - cx)), WEST) }
+                EAST -> { return Pair(Pos(g2e, g2e - cy), WEST) }
+                SOUTH -> { return Pair(Pos(0, g1s + (g3e - cx)), EAST) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+    }
+    throw IllegalArgumentException("Should have returned")
+}
+
+fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Direction> {
+    val gridWidth = 50
+
+    // get block
+    val (cx, cy) = curPos
+
+    val xb = curPos.x / gridWidth
+    val yb = curPos.y / gridWidth
+    
+    println("For curPos $curPos. Block = ($xb, $yb)")
+
+    val curBlock = Pos(xb, yb)
+    when (curBlock) {
+        Pos(2, 0) -> {
+            println("Know we're in the (2, 0) (1st) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(cx - 100, 199), NORTH) }
+                EAST -> { return Pair(Pos(99, 100 + (49 - cy)), WEST) }
+                SOUTH -> { return Pair(Pos(99, 50 + (cx - 100)), WEST) }
+                else -> { throw IllegalArgumentException("Can't wrap in this direction") }
+            }
+        }
+        Pos(1, 0) -> {
+            println("Know we're in the (1, 0) (2nd) block")
+            when (direction) {
+                NORTH -> { return Pair(Pos(0, cx + 100), EAST) }
+                WEST -> { return Pair(Pos(0, 100 + (49 - cy)), EAST) }
+                else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
+            }
+        }
+        Pos(1, 1) -> {
+            println("Know we're in the (1,1) (3rd) block")
+            when (direction) {
+                EAST -> { return Pair(Pos(50 + cy, 49), NORTH) }
+                WEST -> { return Pair(Pos(cy - 50, 100), SOUTH) }
+                else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
+            }
+        }
+        Pos(1, 2) -> {
+            println("Know we're in the (1, 2) (4th) block")
+            when (direction) {
+                EAST -> { return Pair(Pos(149, 149 - cy), WEST) }
+                SOUTH -> { return Pair(Pos(49, 100 + cx), WEST) }
+                else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
+            }
+        }
+        Pos(0, 2) -> {
+            println("Know we're in the (0, 2) (5th) block")
+            when (direction) {
+                WEST -> { return Pair(Pos(50, (149 - cy)), EAST) }
+                NORTH -> { return Pair(Pos(50, 50 + (cx)), WEST) }
+                else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
+            }
+        }
+        Pos(0, 3) -> {
+            println("Know we're in the (0, 3) (6th) block")
+            when (direction) {
+                EAST -> { return Pair(Pos(50 + (cy - 150), 149), NORTH) }
+                SOUTH -> { return Pair(Pos(100 + cx, 0), SOUTH) }
+                WEST -> { return Pair(Pos(cy - 100, 0), SOUTH) }
+                else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
+            }
+        }
+    }
+    throw IllegalArgumentException("Should have returned")
+}
+
+// TODO How to combine with YRanges function?
 fun getXRanges(map: MutableMap<Pos, Char>): Map<Int, IntRange> {
     val maxY = map.keys.map { it.y }.max()
     return (0..maxY).map { y ->
@@ -246,3 +382,12 @@ enum class Direction() {
         WEST -> SOUTH
     }
 }
+
+// Get the coords of next tile after wrapping, 
+// P1 implementation. 
+//                            val wrappedPos = when (direction) {
+//                                NORTH -> Pos(curPos.x, mapYRanges.getValue(curPos.x).max())
+//                                EAST -> Pos(mapXRanges.getValue(curPos.y).min(), curPos.y)
+//                                SOUTH -> Pos(curPos.x, mapYRanges.getValue(curPos.x).min())
+//                                WEST -> Pos(mapXRanges.getValue(curPos.y).max(), curPos.y)
+//                            }

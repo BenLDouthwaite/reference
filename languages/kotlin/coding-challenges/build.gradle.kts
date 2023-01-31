@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation(kotlin("test"))
 }
 
