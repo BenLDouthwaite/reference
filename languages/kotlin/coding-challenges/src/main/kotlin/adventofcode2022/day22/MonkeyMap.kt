@@ -14,21 +14,17 @@ fun main() {
     check(monkeyMap(readText(DAY, "exampleInput.txt"), true) == 5031)
     check(monkeyMap(readText(DAY, "exampleInput2.txt")) == 1206)
     println(monkeyMap(readText(DAY)))
-
-    // 130262 = too high
-    // 129000 = too high
-    // 80000 = too low.
+    
 }
 
 fun monkeyMap(input: String, isExample: Boolean = false): Int {
-    println(input)
+//    println(input)
     val (mapInput, commands) = input.split("\n\n")
 //    println("Map: $mapInput")
 //    println("Commands: $commands")
     val commandsList = getCommandsList(commands)
 
     val map = parseMap(mapInput)
-//    printMap(map)
     
     val mapXRanges = getXRanges(map)
     val mapYRanges = getYRanges(map)
@@ -36,44 +32,43 @@ fun monkeyMap(input: String, isExample: Boolean = false): Int {
     var curPos = getStartingPos(map)
     var direction = EAST
     
-    println("Starting pos = $curPos, direction = $direction")
+    if (DEBUG) {
+        println("Starting pos = $curPos, direction = $direction")
+    }
 
     commandsList.forEach {
         val (command, steps) = it
         
-        println("\n Processing command $command, for $steps, starting at $curPos, facing $direction\n")
+//        println("\n Processing command $command, for $steps, starting at $curPos, facing $direction\n")
                 
         when (command) {
             'R' -> {
-                print("Turn right from $direction - ")
+//                println("Turn right")
+//                print("Turn right from $direction - ")
                 direction = direction.turnRight()
-                println("to $direction")
+//                println("to $direction")
             }
             'L' -> {
-                print("Turn left from $direction - ")
+//                println("Turn left")
+//                print("Turn left from $direction - ")
                 direction = direction.turnLeft()
-                println("to $direction")
+//                println("to $direction")
             }
             'F' -> {
-                println("Move forward $steps spaces")
+//                println("Move forward $steps spaces")
                 
-                println("Currently at $curPos, facing $direction")
+                println("Currently at $curPos. Move $steps steps ($direction)")
+//                println("Currently at $curPos, facing $direction")
 
                 var keepMoving = true
-                repeat(steps!!) {
+                for (i in 1 .. steps!!) {
+//                repeat(steps!!) {
                     if (keepMoving) {
-                        val offset = when (direction) {
-                            NORTH -> Pos(0, -1)
-                            EAST -> Pos(1, 0)
-                            SOUTH -> Pos(0, 1)
-                            WEST -> Pos(-1, 0)
-                        }
-
-                        var nextPos = Pos(curPos.x + offset.x, curPos.y + offset.y)
+                        var nextPos = getNextPosition(curPos, direction)
                         var nextDirection = direction
 
                         if (!map.containsKey(nextPos)) {
-                            println("Need to loop around at : $curPos")
+                            println("Wrap position : X=${nextPos.x}, y=${nextPos.y}")
 
                             val (wrappedPos, newDirection) = when {
                                 isExample -> {
@@ -86,17 +81,18 @@ fun monkeyMap(input: String, isExample: Boolean = false): Int {
 
                             nextPos = wrappedPos
                             nextDirection = newDirection
+                            println("Next position : X=${nextPos.x}, y=${nextPos.y}. Facing ($newDirection)")
                         }
 
                         when (map.getValue(nextPos)) {
                             '#' -> {
-                                println("Next step $nextPos is a wall. Stop")
+//                                println("Next step $nextPos is a wall. Stop")
                                 keepMoving = false
                             }
                             else -> {
                                 curPos = nextPos
                                 direction = nextDirection
-                                println("Move forward to: $curPos")
+//                                println("Move forward to: $curPos")
                             }
                         }
                     }
@@ -105,7 +101,7 @@ fun monkeyMap(input: String, isExample: Boolean = false): Int {
         }
     }
 
-    printMap(map)
+//    printMap(map)
     
     val column = curPos.x
     val row = curPos.y
@@ -116,8 +112,22 @@ fun monkeyMap(input: String, isExample: Boolean = false): Int {
         WEST -> 2
     }
     val result = (1000 * (row + 1)) + (4 * (column + 1)) + facing
-    println("Result = $result")
+//    println("Result = $result")
     return result
+}
+
+private fun getNextPosition(
+    curPos: Pos,
+    direction: Direction
+): Pos {
+    val offset = when (direction) {
+        NORTH -> Pos(0, -1)
+        EAST -> Pos(1, 0)
+        SOUTH -> Pos(0, 1)
+        WEST -> Pos(-1, 0)
+    }
+
+    return Pos(curPos.x + offset.x, curPos.y + offset.y)
 }
 
 fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Pos, Direction> {
@@ -137,13 +147,10 @@ fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Po
 
     val xb = curPos.x / GW
     val yb = curPos.y / GW
-
-    println("For curPos $curPos. Block = ($xb, $yb)")
-
+    
     val curBlock = Pos(xb, yb)
     when (curBlock) {
         Pos(2, 0) -> {
-            println("Know we're in the (2, 0) (1st) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(g2e - cx, g1s), SOUTH) }
                 EAST -> { return Pair(Pos(g3e, g2e - cy), WEST) }
@@ -152,7 +159,6 @@ fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Po
             }
         }
         Pos(0,1) -> {
-            println("Know we're in the (0, 1) (2nd) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(g2e - cx, g0s), SOUTH) }
                 SOUTH -> { return Pair(Pos(g2e - cx, g2e), NORTH) }
@@ -161,7 +167,6 @@ fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Po
             }
         }
         Pos(1, 1) -> {
-            println("Know we're in the (1,1) (3rd) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(g2s, cx - gw), EAST) }
                 SOUTH -> { return Pair(Pos(g2s, g2s + (g1e - cx)), EAST) }
@@ -169,14 +174,12 @@ fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Po
             }
         }
         Pos(2, 1) -> {
-            println("Know we're in the (2, 1) (4th) block")
             when (direction) {
                 EAST -> { return Pair(Pos(g3s + (g1e - cy), g2s), SOUTH) }
                 else -> { throw IllegalArgumentException("Can't wrap in this direction") }
             }
         }
         Pos(2, 2) -> {
-            println("Know we're in the (2, 2) (5th) block")
             when (direction) {
                 SOUTH -> { return Pair(Pos(g2e - cx, g1e), NORTH) }
                 WEST -> { return Pair(Pos(g1s + (g2e - cy), g1e), NORTH) }
@@ -184,7 +187,6 @@ fun getWrappedPosAndDirectionExample(curPos: Pos, direction: Direction): Pair<Po
             }
         }
         Pos(3, 2) -> {
-            println("Know we're in the (0, 3) (6th) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(g2e, g1s + (g3e - cx)), WEST) }
                 EAST -> { return Pair(Pos(g2e, g2e - cy), WEST) }
@@ -205,12 +207,9 @@ fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Dire
     val xb = curPos.x / gridWidth
     val yb = curPos.y / gridWidth
     
-    println("For curPos $curPos. Block = ($xb, $yb)")
-
     val curBlock = Pos(xb, yb)
     when (curBlock) {
         Pos(2, 0) -> {
-            println("Know we're in the (2, 0) (1st) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(cx - 100, 199), NORTH) }
                 EAST -> { return Pair(Pos(99, 100 + (49 - cy)), WEST) }
@@ -219,7 +218,6 @@ fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Dire
             }
         }
         Pos(1, 0) -> {
-            println("Know we're in the (1, 0) (2nd) block")
             when (direction) {
                 NORTH -> { return Pair(Pos(0, cx + 100), EAST) }
                 WEST -> { return Pair(Pos(0, 100 + (49 - cy)), EAST) }
@@ -227,7 +225,6 @@ fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Dire
             }
         }
         Pos(1, 1) -> {
-            println("Know we're in the (1,1) (3rd) block")
             when (direction) {
                 EAST -> { return Pair(Pos(50 + cy, 49), NORTH) }
                 WEST -> { return Pair(Pos(cy - 50, 100), SOUTH) }
@@ -235,7 +232,6 @@ fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Dire
             }
         }
         Pos(1, 2) -> {
-            println("Know we're in the (1, 2) (4th) block")
             when (direction) {
                 EAST -> { return Pair(Pos(149, 149 - cy), WEST) }
                 SOUTH -> { return Pair(Pos(49, 100 + cx), WEST) }
@@ -243,15 +239,13 @@ fun getWrappedPosAndDirection(curPos: Pos, direction: Direction): Pair<Pos, Dire
             }
         }
         Pos(0, 2) -> {
-            println("Know we're in the (0, 2) (5th) block")
             when (direction) {
                 WEST -> { return Pair(Pos(50, (149 - cy)), EAST) }
-                NORTH -> { return Pair(Pos(50, 50 + (cx)), WEST) }
+                NORTH -> { return Pair(Pos(50, 50 + (cx)), EAST) }
                 else -> { IllegalArgumentException("Invalid input for Current Pos $curPos and direction $direction")}
             }
         }
         Pos(0, 3) -> {
-            println("Know we're in the (0, 3) (6th) block")
             when (direction) {
                 EAST -> { return Pair(Pos(50 + (cy - 150), 149), NORTH) }
                 SOUTH -> { return Pair(Pos(100 + cx, 0), SOUTH) }
@@ -333,6 +327,7 @@ fun getCommandsList(commands: String): MutableList<Pair<Char, Int?>> {
         val nextCharacter = remCommands.first()
         
         when (nextCharacter) {
+            '\n' -> { return commandsList }
             'R' -> {
                 commandsList.add(Pair('R', null))
                 remCommands = remCommands.substring(1)

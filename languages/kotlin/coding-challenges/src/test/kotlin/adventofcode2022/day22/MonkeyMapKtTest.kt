@@ -65,8 +65,8 @@ class MonkeyMapKtTest {
                 Arguments.of(Pos(d, l), SOUTH, Pos(b, n), WEST),
 
                 // Block 0, 2 = 5
-                Arguments.of(Pos(a, k), NORTH, Pos(c, i), WEST),
-                Arguments.of(Pos(b, k), NORTH, Pos(c, j), WEST),
+                Arguments.of(Pos(a, k), NORTH, Pos(c, i), EAST),
+                Arguments.of(Pos(b, k), NORTH, Pos(c, j), EAST),
 
                 Arguments.of(Pos(a, k), WEST, Pos(c, h), EAST),
                 Arguments.of(Pos(a, l), WEST, Pos(c, g), EAST),
