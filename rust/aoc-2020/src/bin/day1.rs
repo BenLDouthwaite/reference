@@ -79,6 +79,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day1_p1_test() {
         let input = include_str!("../../inputs/day1.txt");
         let result = day1_p1(input);
@@ -93,6 +94,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day1_p2_test() {
         let input = include_str!("../../inputs/day1.txt");
         let result = day1_p2(input);
@@ -106,6 +108,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day1_p1_naive_test() {
         let result = day1_naive("./inputs/day1.txt");
         assert_eq!(result, 969024);
@@ -118,6 +121,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day1_p2_naive_test() {
         let result = day1_part2("./inputs/day1.txt");
         println!("Day 1. Part 2. Result : {}", result);

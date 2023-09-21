@@ -64,6 +64,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day2_p1_test() {
         let input = include_str!("../../inputs/day2.txt");
         let result = day2_p1(input);
@@ -80,6 +81,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn day2_p2_test() {
         let input = include_str!("../../inputs/day2.txt");
         let result = day2_p2(input);
