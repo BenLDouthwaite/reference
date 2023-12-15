@@ -1,6 +1,6 @@
 package adventofcode2022.day18
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.util.LinkedList
 
 private const val DAY = "day18"

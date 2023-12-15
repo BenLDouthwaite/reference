@@ -1,6 +1,6 @@
 package adventofcode2022.day21
 
-import adventofcode2022.readText
+import aocUtils.readText
 
 private const val DAY = "day21"
 

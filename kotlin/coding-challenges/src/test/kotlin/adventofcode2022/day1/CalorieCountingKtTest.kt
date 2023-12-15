@@ -1,6 +1,6 @@
 package adventofcode2022.day1
 
-import adventofcode2022.readText
+import aocUtils.readText
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

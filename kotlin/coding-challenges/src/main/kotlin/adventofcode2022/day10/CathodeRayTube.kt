@@ -1,6 +1,6 @@
 package adventofcode2022.day10
 
-import adventofcode2022.readText
+import aocUtils.readText
 
 /**
  * This puzzle is some of the hackiest code I've written

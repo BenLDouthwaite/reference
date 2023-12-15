@@ -1,6 +1,6 @@
 package adventofcode2022.day12
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.util.LinkedList
 import java.util.Queue
 

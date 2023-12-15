@@ -1,6 +1,6 @@
 package adventofcode2022.day2
 
-import adventofcode2022.readText
+import aocUtils.readText
 
 fun main() {
     val exampleInput = readText("day2", "exampleInput.txt")

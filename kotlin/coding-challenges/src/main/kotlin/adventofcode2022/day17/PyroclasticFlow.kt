@@ -1,4 +1,4 @@
-import adventofcode2022.readText
+import aocUtils.readText
 
 private const val DAY = "day17"
 

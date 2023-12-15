@@ -1,7 +1,7 @@
 package adventofcode2022.day22
 
 import adventofcode2022.day22.Direction.*
-import adventofcode2022.readText
+import aocUtils.readText
 
 private const val DAY = "day22"
 

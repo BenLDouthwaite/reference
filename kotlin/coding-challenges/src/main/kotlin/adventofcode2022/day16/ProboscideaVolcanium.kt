@@ -1,4 +1,4 @@
-import adventofcode2022.readText
+import aocUtils.readText
 import java.util.*
 
 private const val DAY = "day16"

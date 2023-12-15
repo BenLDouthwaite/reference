@@ -1,5 +1,6 @@
 package adventofcode2022
 
 object Constants {
-    const val AOC_DIR = "/home/bld/dev/reference/languages/kotlin/coding-challenges/src/main/kotlin/adventofcode2022"
+    // TODO Generify this per env, should be from root of the project.
+    const val AOC_2022_DIR = "/home/lindev/dev/reference/kotlin/coding-challenges/src/main/kotlin/adventofcode2022"
 }

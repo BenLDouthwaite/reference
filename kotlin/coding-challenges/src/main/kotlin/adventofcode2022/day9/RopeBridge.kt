@@ -1,6 +1,6 @@
 package adventofcode2022.day9
 
-import adventofcode2022.readText
+import aocUtils.readText
 import kotlin.math.sign
 
 fun main() {

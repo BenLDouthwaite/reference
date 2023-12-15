@@ -1,6 +1,6 @@
 package adventofcode2022.day11
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.lang.IllegalArgumentException
 
 fun main() {

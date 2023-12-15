@@ -1,6 +1,6 @@
 package adventofcode2022.day4
 
-import adventofcode2022.readText
+import aocUtils.readText
 
 fun main() {
     println()

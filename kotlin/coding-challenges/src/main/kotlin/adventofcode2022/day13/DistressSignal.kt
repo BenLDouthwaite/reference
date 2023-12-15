@@ -1,6 +1,6 @@
 package adventofcode2022.day13
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.util.Comparator.comparing
 
 private const val DAY = "day13"

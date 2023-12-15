@@ -1,6 +1,6 @@
 package adventofcode2022.day5
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.util.Stack
 
 fun main() {

@@ -1,6 +1,6 @@
 package adventofcode2022.day7
 
-import adventofcode2022.readText
+import aocUtils.readText
 import java.lang.IllegalStateException
 
 fun main() {

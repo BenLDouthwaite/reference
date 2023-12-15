@@ -1,6 +1,6 @@
 package adventofcode2022.day15
 
-import adventofcode2022.readText
+import aocUtils.readText
 import kotlin.math.absoluteValue
 
 private const val DAY = "day15"
