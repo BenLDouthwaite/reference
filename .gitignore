@@ -19,3 +19,6 @@ __pycache__/
 ## Vim 
 
 *.swp
+
+## Advent of code inputs - not meant to commit them
+**/aoc_puzzle_input*
