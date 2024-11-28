@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from leetcode.can_place_flowers import can_place_flowers
+from leetcode.p605_can_place_flowers import can_place_flowers
 
 
 class Test(TestCase):

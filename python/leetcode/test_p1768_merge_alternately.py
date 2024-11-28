@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from leetcode.merge_alternately import merge_alternately
+from leetcode.p1768_merge_alternately import merge_alternately
 
 class TestSolution(TestCase):
     def test_merge_alternately(self):

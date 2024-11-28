@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from leetcode.greatest_common_divisor_of_strings import greatest_common_divisor_of_strings, gcd_recursive, gcd
+from leetcode.p1071_greatest_common_divisor_of_strings import greatest_common_divisor_of_strings, gcd_recursive, gcd
 
 
 class Test(TestCase):

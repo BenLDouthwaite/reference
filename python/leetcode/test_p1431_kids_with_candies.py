@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from leetcode.kids_with_candies import kids_with_candies
+from leetcode.p1432_kids_with_candies import kids_with_candies
 
 
 class Test(TestCase):
