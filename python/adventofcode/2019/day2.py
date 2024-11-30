@@ -1,23 +1,17 @@
 def execute_intcode_processing(values):
     i = 0
     while values[i] != 99:
-        opcode = values[i]
-        first_input_pos = values[i+1]
-        second_input_pos = values[i+2]
-        output_pos = values[i+3]
-
-        if opcode == 1:
-            values[output_pos] = values[first_input_pos] + values[second_input_pos]
-        if opcode == 2:
-            values[output_pos] = values[first_input_pos] * values[second_input_pos]
+        op,in1,in2,out = values[i : i + 4]
+        if op == 1:
+            values[out] = values[in1] + values[in2]
+        if op == 2:
+            values[out] = values[in1] * values[in2]
         i += 4
-
     return values[0]
 
 with open("./puzzleInputs/aoc_puzzle_input_day2.txt") as file:
     values = [int(x) for x in file.read().split(",")]
 
-    # P1
     p1_values = values.copy()
     p1_values[1] = 12
     p1_values[2] = 2
