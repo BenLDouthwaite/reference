@@ -1,5 +1,4 @@
 def is_subsequence(s: str, t: str) -> bool:
-    print(f"Find if {s} is subsequence of {t}")
     n = len(s)
     if n == 0:
         return True

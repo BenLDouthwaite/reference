@@ -11,7 +11,6 @@ def max_operations(nums: List[int], k: int) -> int:
     while ptr_l < ptr_r:
         l = nums[ptr_l]
         r = nums[ptr_r]
-        print(f"pl {ptr_l}, pr {ptr_r} = {l}, {r}")
         val = l + r
         if val == k:
             count += 1
