@@ -1,7 +1,11 @@
 text_io_wrapper = open("./puzzleInputs/aoc_day12_example1.txt")
-# text_io_wrapper = open("./puzzleInputs/aoc_day12_example2.txt")
+text_io_wrapper = open("./puzzleInputs/aoc_day12_example2.txt")
+# text_io_wrapper = open("./puzzleInputs/aoc_day12_example3.txt")
+# text_io_wrapper = open("./puzzleInputs/aoc_day12_example4.txt")
 
-# text_io_wrapper = open("./puzzleInputs/aoc_puzzle_input_2024_day12.txt")
+text_io_wrapper = open("./puzzleInputs/aoc_puzzle_input_2024_day12.txt")
+
+# Indexed via a + bj. Where 'a' is the row, and 'b' is the column
 grid = dict()
 for row_index, line in enumerate(text_io_wrapper):
     for column_index, character in enumerate(line.strip()):
@@ -36,20 +40,50 @@ for pos, character in grid.items():
     search(pos, set(), region_positions)
     regions[character] = char_regions + [region_positions]
 
-total_price = 0
+p1_total_price = 0
+p2_total_price = 0
+
 for char in regions:
     char_regions = regions[char]
     for char_region in char_regions:
-        total_barriers_needed = 0
+        all_barriers_needed = []
         for pos in char_region:
-            adjacent_positions = [pos + n for n in [1, -1, 1j, -1j]]
-            barriers_not_needed = [n for n in adjacent_positions if n in char_region]
-            total_barriers_needed += 4 - len(barriers_not_needed)
-        total_price += len(char_region) * total_barriers_needed
-print(total_price)
-# assert total_price == 1518548
+            possible_perpendicular_barriers = [(pos, pos + n) for n in [1, -1, 1j, -1j]]
+            barriers_needed = [(start, end) for (start, end) in possible_perpendicular_barriers if end not in char_region]
+            all_barriers_needed += barriers_needed
+        p1_total_price += len(char_region) * len(all_barriers_needed)
 
+        # For p2, analyse the barriers to see
+        corners = []
+        diagonal_offset = 0
+        for pos in char_region:
 
-# p2 todo - check boundary number of contiguous barriers
-a_region_1 = regions['A'][0]
-print(a_region_1)
+            offset_deltas = [
+                [-1 + -1j, -1, -1j, 0], # Top left
+                [-1, -1 + 1j, 0, 1j], # Top right
+                [-1j, 0, 1 + -1j, 1], # Bottom Left
+                [0, 1j, 1, 1 + 1j] # Bottom right
+            ]
+
+            for offset_delta in offset_deltas:
+                char_positions = [pos + n for n in offset_delta]
+                if set(char_positions) not in corners:
+
+                    A_pos, B_pos, C_pos, D_pos = char_positions
+                    chars = [grid[pos] for pos in char_positions if pos in grid and pos in char_region]
+                    if len(chars) == 1 or len(chars) == 3:
+                        corners.append(set(char_positions))
+                    elif len(chars) == 2:
+                        A, B, C, D = grid.get(A_pos, '-'), grid.get(B_pos, '-'), grid.get(C_pos, '-'), grid.get(D_pos, '-')
+                        debug = ''.join([A, B, '\n', C, D])
+                        if A == D == char or B == C == char:
+                            corners.append(set(char_positions))
+                            diagonal_offset += 1 # Test hack - is this enough to catch from both sides?
+
+        price = len(char_region) * (len(corners) + diagonal_offset)
+        p2_total_price += price
+
+print(p1_total_price)
+print(p2_total_price)
+assert p1_total_price == 1518548
+assert p2_total_price == 909564
