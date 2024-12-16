@@ -58,6 +58,8 @@ for char in regions:
         diagonal_offset = 0
         for pos in char_region:
 
+            # AB
+            # CD Imagine ever corner is the centre of 4 points.
             offset_deltas = [
                 [-1 + -1j, -1, -1j, 0], # Top left
                 [-1, -1 + 1j, 0, 1j], # Top right
