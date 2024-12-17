@@ -1,11 +1,7 @@
-# A button = 3 token
-# B button = 1 token
-# Position above prize
-# never more than 100 per prize.
-
 text_io_wrapper = open("./puzzleInputs/aoc_puzzle_input_2024_day13.txt")
 
-def solve_linear_equations(A, B, T):
+# Keep as a reference - too elaborate to actually invoke
+def solve_linear_equations_debug(A, B, T):
     print(f"Equation 1. {A[0]}*A + {B[0]}*B = X = {T[0]}")
     print(f"Equation 2. {A[1]}*A + {B[1]}*B = Y = {T[1]}")
     print(f"Reduced 1. A = {T[0]}/{A[0]} - {B[0]}*B/{A[0]}")
@@ -33,65 +29,27 @@ def solve_linear_equations(A, B, T):
     print(f"A == {a}")
     return a, b
 
-# test_input = """
-# Button A: X+94, Y+34
-# Button B: X+22, Y+67
-# Prize: X=8400, Y=5400
-# """.strip()
-
-# test_input = """
-# Button A: X+26, Y+66
-# Button B: X+67, Y+21
-# Prize: X=10000000012748, Y=10000000012176
-# """.strip()
-
-# print(test_input)
+def solve_linear_equations(A, B, T):
+    total_b = (A[1] * B[0] * -1) + A[0] * B[1]
+    total_constant = A[0] * T[1] - A[1] * T[0]
+    b = total_constant / total_b
+    a = (T[0] - (B[0] * b)) / A[0]
+    return a, b
 
 inputs = text_io_wrapper.read().split('\n\n')
-print(inputs)
-
 parse_input = lambda line: [*map(lambda v: int(v.strip()[2:]), line.split(','))]
 
-total_cost = 0
-
 # p1
+total_cost = {0:0, 1:0}
+for part in [0, 1]:
+    offset = (10000000000000 * part)
+    for input in inputs:
+        A, B, (T1, T2) = [*map(lambda s: parse_input(s.split(':')[1].strip()), input.splitlines())]
+        a, b = solve_linear_equations(A, B, (T1 + offset, T2 + offset))
+        if a % 1 == 0 and b % 1 == 0:
+            total_cost[part] += 3 * int(a) + int(b)
 
-for input in inputs:
-    A, B, T = [*map(lambda s: parse_input(s.split(':')[1].strip()), input.splitlines())]
-    print(A, B, T)
-
-    a, b = solve_linear_equations(A, B, T)
-
-    print(a, b)
-
-    if a % 1 == 0 and b % 1  == 0:
-        a_cost = 3 * int(a)
-        b_cost = int(b)
-        cost = a_cost + b_cost
-        print(f"Token cost = 3 * a ({a_cost}) + 1 * b ({b_cost}) = {cost}")
-        total_cost += cost
-    else:
-        print(f"No exact match for {A, B, T}")
-print(total_cost)
-
-#p2
-p2_total_cost = 0
-for input in inputs:
-
-    A, B, T = [*map(lambda s: parse_input(s.split(':')[1].strip()), input.splitlines())]
-    print(A, B, T)
-    T[0], T[1] = T[0] + 10000000000000, T[1] + 10000000000000
-    a, b = solve_linear_equations(A, B, T)
-
-    print(a, b)
-
-    if a % 1 == 0 and b % 1  == 0:
-        a_cost = 3 * int(a)
-        b_cost = int(b)
-        cost = a_cost + b_cost
-        print(f"Token cost = 3 * a ({a_cost}) + 1 * b ({b_cost}) = {cost}")
-        p2_total_cost += cost
-    else:
-        print(f"No exact match for {A, B, T}")
-print(p2_total_cost)
-
+print(total_cost[0])
+assert total_cost[0] == 33427
+print(total_cost[1])
+assert total_cost[1] == 91649162972270
