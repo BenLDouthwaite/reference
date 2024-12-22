@@ -14,22 +14,49 @@ col_count = len(grid_lines[0])
 grid = {row_index + column_index * 1j: character for row_index, line in enumerate(grid_lines)
         for column_index, character in enumerate(line.strip())}
 
-cost_dir_deltas = {-1j:'<', -1:'^', 1j:'>', 1:'v'}
+direction = 1j # Facing east
+start_pos = [position for position, char in grid.items() if char == 'S'][0]
+end_pos = [position for position, char in grid.items() if char == 'E'][0]
+distances = dict()
 
-def check_score():
-    end_pos_paths = distances[end_pos]
-    path_tiles = set()
-    for score, path in end_pos_paths:
-        path_tiles.update(path)
+search_queue = PriorityQueue()
+counter = itertools.count() # Only exists to be a tie-breaker if score is the same for 2 paths
+search_queue.put((0, next(counter), (start_pos, direction, [])))
 
-    total_tiles_in_shortest_paths = len(path_tiles) + 1
-    print(f"Total tiles involved in all shortest paths :{total_tiles_in_shortest_paths}")
-    assert total_tiles_in_shortest_paths == 527
+tiles_on_path_to_end = []
+best = 1e9
 
+while not search_queue.empty():
+    score, count, (position, direction, path) = search_queue.get()
 
-def adjacent_path_positions(position):
-    return [position + d for d in [1,-1,1j,-1j] if grid[position + d] in '.ETO*']
+    # If already above best total path to E, can't be equal shortest
+    if score > best: continue
 
+    # if score > best_score_to_E:
+    if grid[position] == 'E' and score <= best:
+        tiles_on_path_to_end += path
+        best = score
+        continue
+
+    # Hack to account for scores changing based on rotation
+    if score > distances.get(position, 1e9) + 1000:
+        continue
+
+    # Check for neighbours moving forward 1 space, left 1 space or right 1 space. Don't go backwards
+    for (neighbour, new_direction, cost) in [(position + direction * rotation, direction * rotation, cost) for rotation, cost in [(1, 1), (1j, 1001), (-1j, 1001)]
+                                       if grid[position + direction * rotation] in '.E']:
+        if neighbour in path: continue
+        neighbour_score = score + cost
+        if neighbour_score < distances.get(neighbour, 1e9):
+            distances[neighbour] = neighbour_score
+        search_queue.put((neighbour_score, (next(counter)), (neighbour, new_direction, path + [position])))
+
+unique_tiles_on_path_to_end = len(set(tiles_on_path_to_end)) + 1 # + 1 to include the end
+print(best, unique_tiles_on_path_to_end)
+assert best == 102460
+assert unique_tiles_on_path_to_end == 527
+
+# Only for debugging
 def print_grid(grid_dict, row_count, col_count):
     y_index_width = 4
 
@@ -38,60 +65,6 @@ def print_grid(grid_dict, row_count, col_count):
         print(y_index, end ='')
         for x in range(col_count):
             position = y + x * 1j
-            value = grid_dict.get(position, '.')
+            value = grid_dict.search_val(position, '.')
             print(value, end='')
         print()
-
-# Keep implementation as a refernce.
-# print_grid(grid, row_count, col_count)
-direction = '>'
-start_pos = [position for position, char in grid.items() if char == 'S'][0]
-end_pos = [position for position, char in grid.items() if char == 'E'][0]
-distances = dict()
-
-came_from = dict()
-
-def get_score(cur_pos, direction, next_pos, score):
-    needed_direction = cost_dir_deltas[(next_pos - cur_pos)]
-    if direction == needed_direction:
-        return score + 1, needed_direction
-    else:
-        return score + 1001, needed_direction
-
-search_queue = PriorityQueue()
-counter = itertools.count() # Only exists to be a tie-breaker if score is the same for 2 paths
-search_queue.put((0, next(counter), (start_pos, direction, [])))
-
-visited = dict()
-def visit(search_val):
-
-    score, count, (position, direction, path) = search_val
-    previous_distances = distances.get(position, [])
-
-    if len(previous_distances) > 0:
-        prev_score, _ = previous_distances[0]
-        if score > prev_score:
-            if (score - prev_score) > 1001:
-                return
-
-
-    for neighbour in adjacent_path_positions(position):
-        if neighbour in path: continue
-
-        neighbour_score, new_direction = get_score(position, direction, neighbour, score)
-        neighbour_score_list = [(neighbour_score, path + [position])]
-        if neighbour not in distances:
-            distances[neighbour] = neighbour_score_list
-        else:
-            (old_neighbour_score, _) = distances[neighbour][0]
-            if neighbour_score < old_neighbour_score:  # Better path found - replace
-                distances[neighbour] = neighbour_score_list
-            elif neighbour_score == old_neighbour_score:  # Equal, keep both
-                distances[neighbour] = distances[neighbour] + neighbour_score_list
-
-        search_queue.put((neighbour_score, (next(counter)), (neighbour, new_direction, path + [position])))
-
-while not search_queue.empty():
-    visit(search_queue.get())
-
-check_score()
