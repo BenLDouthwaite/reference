@@ -173,34 +173,53 @@ def debug_rem(af3d, shifted_a, target_val, target_a_rem):
     return False
 
 pos_a = []
-target_rem = [0]
 
 pc = program.copy()
 pc.reverse()
 
 pos_a_7 = [6504642, 6504650, 6504682, 6504686, 6504698, 6506222, 8160169, 8160174]
 
+a_values = [3]
+target_rem = [3]
 
-for p in range(0, 4):
+def get_pos_A_next_step(previous_a_values):
+    a_values_to_test = []
+    for n in previous_a_values:
+        for i in range(8):
+            a_values_to_test.append((n * 8) + i)
+    print(a_values_to_test)
+    return a_values_to_test
+
+for p in range(1, len(program)):
     start = pow(8, p)
     end = pow(8, p + 1)
     print(f"Test in range: {start} - {end}")
+
     # for i in range(start, end):
     #     # print(i)
     #     pass
     pos_a.clear()
-    for a in range(start, end):
+
+    pos_a_values = get_pos_A_next_step(a_values)
+    print(pos_a_values)
+
+    a_values.clear()
+
+    for a in pos_a_values:
         b1 = (a % 8)
         i = b1
         j = a >> (b1 ^ 5)
 
         target = pc[p]
-        if debug_rem(i, j, target, target_rem):
-            print(f"Testing pow {p}, a = {a}, i={i}, j={j}")
-            pos_a.append(a)
-    target_rem = pos_a.copy()
-    print(pos_a)
+        # print(f"Testing pow {p}, a = {a}, i={i}, j={j}. Target = {target}. Target_rem = {target_rem}")
 
-pos_a = pos_a_7
-for a in pos_a:
+        if debug_rem(i, j, target, target_rem):
+            print(f"Testing pow {p}, a = {a}, i={i}, j={j}. Target = {target}. Target_rem = {target_rem}")
+            a_values.append(a)
+
+
+    target_rem = a_values.copy()
+    print(a_values)
+
+for a in a_values:
     print(run(a, program))
