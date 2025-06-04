@@ -1,6 +1,8 @@
 from unittest import TestCase
 
-from leetcode.p62_unique_paths import Solution
+from leetcode.p62_unique_paths import Solution        """
+        Do not return anything, modify nums1 in-place instead.
+        """
 
 
 class TestSolution(TestCase):
